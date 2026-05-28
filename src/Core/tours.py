@@ -85,3 +85,68 @@ class TourManager:
         data[self.owner] = tours
         self.storage.save(data)
 
+    def create_tour(self, name: str, places: list) -> Tour:
+        """
+        Creates a new tour with the given name and list of places, then saves it.
+
+        Args:
+            name (str): Name chosen by the user for this tour.
+            places (list): List of Place objects to include in the tour.
+
+        Returns:
+            Tour: The newly created tour.
+        """
+        # Convert Place objects to dicts for storage
+        places_as_dicts = []
+        for place in places:
+            places_as_dicts.append(place.to_dict())
+
+        tour = Tour(name=name, owner=self.owner, places=places_as_dicts)
+
+        existing = self._load_owner_tours()
+        existing.append(tour.to_dict())
+        self._save_owner_tours(existing)
+
+        return tour
+
+    def list_tours(self) -> list[Tour]:
+        """Returns all tours belonging to the current user."""
+        raw_tours = self._load_owner_tours()
+        result = []
+        for t in raw_tours:
+            result.append(Tour.from_dict(t))
+        return result
+
+    def get_tour_by_id(self, tour_id: str) -> Tour | None:
+        """
+        Returns the tour matching the given id, or None if not found.
+
+        Args:
+            tour_id (str): The id to look up.
+        """
+        raw_tours = self._load_owner_tours()
+        for t in raw_tours:
+            if t["id"] == tour_id:
+                return Tour.from_dict(t)
+        return None
+
+    def set_visibility(self, tour_id: str, is_public: bool) -> bool:
+        """
+        Sets the visibility of a tour (public or private).
+
+        Args:
+            tour_id (str): The id of the tour to update.
+            is_public (bool): True to make it public, False to make it private.
+
+        Returns:
+            bool: True if the tour was found and updated, False otherwise.
+        """
+        raw_tours = self._load_owner_tours()
+
+        for t in raw_tours:
+            if t["id"] == tour_id:
+                t["is_public"] = is_public
+                self._save_owner_tours(raw_tours)
+                return True
+
+        return False

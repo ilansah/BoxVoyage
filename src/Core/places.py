@@ -130,3 +130,27 @@ class PlaceManager:
         existing.append(place.to_dict())
         self._save_owner_places(existing)
         return place
+    
+    def list_places(self) -> list["Place"]:
+        """Returns all places belonging to the current user."""
+        existing = self._load_owner_places()
+        result = []
+        for p in existing:
+            result.append(Place.from_dict(p))
+        return result
+    
+    def remove_place(self, name: str) -> bool:
+        """Removes a place by name. Returns True if removed, False if not found."""
+        existing = self._load_owner_places()
+        updated = []
+
+        for p in existing:
+            if p["name"].lower() != name.lower():
+                updated.append(p)
+
+        # If nothing was removed, the sizes are equal
+        if len(updated) == len(existing):
+            return False
+
+        self._save_owner_places(updated)
+        return True
