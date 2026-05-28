@@ -1,0 +1,14 @@
+{
+  "alice": {
+    "username": "alice",
+    "password_hash": "2bd806c9"
+  },
+  "bob": {
+    "username": "bob",
+    "password_hash": "9f86d081"
+  },
+  "vic": {
+    "username": "vic",
+    "password_hash": "866d116d21281a3aa9375c6deca295bfe67c9989581578b10747b59da428e479"
+  }
+}

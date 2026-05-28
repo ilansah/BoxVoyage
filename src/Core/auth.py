@@ -10,13 +10,11 @@ class Users :
 
 
     def to_dict(self) : 
-        """Converts the user to a dictionary for saving to JSON."""
         return { 'username' : self.username,'password_hash' : self.password_hash }
 
     @classmethod
     def from_dict(cls, data: dict):
         """Reconstructs a User from a JSON dictionary (without re-hashing the password)."""
-        # Create the object without calling __init__ to avoid re-hashing the hash
         user = cls.__new__(cls)
         user.username = data["username"]
         user.password_hash = data["password_hash"]
