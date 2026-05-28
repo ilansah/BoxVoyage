@@ -13,7 +13,7 @@ import json
 import math
 import os
 import requests
-from src.Core.algorithm import GeoPoint
+from src.core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
 # from data.storage import JsonStorage
 
@@ -54,7 +54,7 @@ class Place:
 
 
 
-from src.Core.algorithm import GeoPoint
+from src.core.algorithm import GeoPoint
 
 class GeocodingService:
     """
