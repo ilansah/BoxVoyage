@@ -1,3 +1,5 @@
+import math
+
 class GeoPoint:
     """
     Represents a geographic point using decimal degree coordinates (DD format).
@@ -15,9 +17,11 @@ class GeoPoint:
         self.lat = lat
         self.lon = lon
 
+    @property
     def lat_rad(self) -> float:
         return self.lat * math.pi / 180
 
+    @property
     def lon_rad(self) -> float:
         return self.lon * math.pi / 180
 
