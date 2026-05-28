@@ -72,9 +72,3 @@ class DistanceCalculator:
         
         distance = DistanceCalculator.EARTH_RADIUS * math.acos(cos_angle)
         return distance
-
-# Test the distance calculator
-point1 = GeoPoint(48.8566, 2.3522)  # Paris
-point2 = GeoPoint(51.5074, -0.1278)  # London
-result = DistanceCalculator.distance(point1, point2)
-print(f"Distance between Paris and London: {result:.2f} km")
