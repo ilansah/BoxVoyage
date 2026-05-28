@@ -14,6 +14,7 @@ import math
 import os
 import requests
 from src.Core.algorithm import Geopoint
+from geopy.geocoders import Nominatim
 # from data.storage import JsonStorage
 
 
@@ -49,3 +50,30 @@ class Place:
 
     def __repr__(self) -> str:
         return f"Place(name={self.name!r}, lat={self.point.lat}, lon={self.point.lon})"
+
+
+
+
+class GeocodingService:
+    """
+    Service for geocoding addresses to geographic coordinates.
+    Uses Nominatim (OpenStreetMap) as the geocoding provider.
+    """
+
+    def __init__(self):
+        self.geocoder = Nominatim(user_agent="boxvoyage")
+
+    def get_location(self, address: str) -> tuple[float, float]:
+        """
+        Get latitude and longitude for a given address.
+
+        Args:
+            address (str): The address to geocode.
+
+        Returns:
+            Tuple[float, float]: A tuple of (latitude, longitude).
+        """
+        location = self.geocoder.geocode(address)
+        if location is None:
+            raise ValueError(f"Aucune adresse trouvée {address}")
+        return (location.latitude, location.longitude)
