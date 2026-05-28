@@ -27,3 +27,48 @@ class GeoPoint:
 
     def __repr__(self) -> str:
         return f"GeoPoint(lat={self.lat}, lon={self.lon})"
+
+
+class DistanceCalculator:
+    """
+    Calculates distances between geographic points using the great-circle distance formula.
+    
+    Constants:
+        EARTH_RADIUS (float): Radius of Earth in kilometers = 6378.197 km
+        PI (float): Mathematical constant π = 3.141592
+    """
+    
+    EARTH_RADIUS = 6378.197  # km
+    PI = 3.141592
+    
+    @staticmethod
+    def distance(point1: GeoPoint, point2: GeoPoint) -> float:
+        """
+        Calculate the great-circle distance between two geographic points.
+        
+        Formula:
+            D(lat₁, lon₁) = R_terre × arccos(sin(lat₁) × sin(lat₂) + cos(lat₁) × cos(lat₂) × cos(lon₂ - lon₁))
+        
+        Args:
+            point1 (GeoPoint): First geographic point
+            point2 (GeoPoint): Second geographic point
+        
+        Returns:
+            float: Distance in kilometers
+        """
+        lat1_rad = point1.lat_rad
+        lon1_rad = point1.lon_rad
+        lat2_rad = point2.lat_rad
+        lon2_rad = point2.lon_rad
+        
+        # Apply the great-circle distance formula
+        cos_angle = (
+            math.sin(lat1_rad) * math.sin(lat2_rad) +
+            math.cos(lat1_rad) * math.cos(lat2_rad) * math.cos(lon2_rad - lon1_rad)
+        )
+        
+        # Clamp to [-1, 1] to avoid numerical errors with arccos
+        cos_angle = max(-1, min(1, cos_angle))
+        
+        distance = DistanceCalculator.EARTH_RADIUS * math.acos(cos_angle)
+        return distance
