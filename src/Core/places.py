@@ -13,7 +13,7 @@ import json
 import math
 import os
 import requests
-from src.Core.algorithm import Geopoint
+from src.Core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
 # from data.storage import JsonStorage
 
@@ -54,6 +54,8 @@ class Place:
 
 
 
+from src.Core.algorithm import GeoPoint
+
 class GeocodingService:
     """
     Service for geocoding addresses to geographic coordinates.
@@ -63,7 +65,7 @@ class GeocodingService:
     def __init__(self):
         self.geocoder = Nominatim(user_agent="boxvoyage")
 
-    def get_location(self, address: str) -> tuple[float, float]:
+    def get_coordinates(self, address: str) -> GeoPoint | None:
         """
         Get latitude and longitude for a given address.
 
@@ -71,9 +73,9 @@ class GeocodingService:
             address (str): The address to geocode.
 
         Returns:
-            Tuple[float, float]: A tuple of (latitude, longitude).
+            GeoPoint if found, None otherwise.
         """
         location = self.geocoder.geocode(address)
         if location is None:
-            raise ValueError(f"Aucune adresse trouvée {address}")
-        return (location.latitude, location.longitude)
+            return None
+        return GeoPoint(lat=location.latitude, lon=location.longitude)

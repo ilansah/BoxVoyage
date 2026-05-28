@@ -1,4 +1,5 @@
 import json
+import os
 
 
 class JsonStorage:    
@@ -13,5 +14,6 @@ class JsonStorage:
             return {}
     
     def save(self, data: dict) -> None:
+        os.makedirs(os.path.dirname(self.filepath), exist_ok=True)  # crée le dossier si absent
         with open(self.filepath, 'w') as f:
             json.dump(data, f, indent=2)
