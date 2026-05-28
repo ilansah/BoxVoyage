@@ -2,20 +2,14 @@
 places.py — Place management and geographic geocoding.
 
 Handles:
-- GeoPoint: geographic coordinate representation (placeholder, will be replaced
-  by the import from algorithm.py once P2 delivers their part)
 - GeocodingService: converts a place name to coordinates via Nominatim API
 - Place: data object representing a user's place of interest
 - PlaceManager: CRUD operations on a user's place list
 """
 
-import json
-import math
-import os
-import requests
-from src.core.algorithm import GeoPoint
+from core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
-from src.data.storage import JsonStorage
+from data.storage import JsonStorage
 
 
 class Place:
@@ -35,12 +29,12 @@ class Place:
 
     def to_dict(self) -> dict:
         """Serializes the Place to a JSON-compatible dictionary."""
-        return {
-            "name": self.name,
-            "lat": self.point.lat,
-            "lon": self.point.lon,
-            "owner": self.owner,
-        }
+        result = {}
+        result["name"] = self.name
+        result["lat"] = self.point.lat
+        result["lon"] = self.point.lon
+        result["owner"] = self.owner
+        return result
 
     @classmethod
     def from_dict(cls, data: dict) -> "Place":
@@ -51,10 +45,6 @@ class Place:
     def __repr__(self) -> str:
         return f"Place(name={self.name!r}, lat={self.point.lat}, lon={self.point.lon})"
 
-
-
-
-from src.core.algorithm import GeoPoint
 
 class GeocodingService:
     """
@@ -80,12 +70,12 @@ class GeocodingService:
             return None
         return GeoPoint(lat=location.latitude, lon=location.longitude)
 
-  
+
 class PlaceManager:
     """
     Manages CRUD operations on a user's list of places.
 
-    Places are stored in JSON file
+    Places are stored in a JSON file.
 
     Args:
         storage (JsonStorage): Storage instance pointing to places.json.
@@ -99,7 +89,9 @@ class PlaceManager:
     def _load_owner_places(self) -> list[dict]:
         """Returns the raw place dicts for the current user."""
         data = self.storage.load()
-        return data.get(self.owner, [])
+        if self.owner not in data:
+            return []
+        return data[self.owner]
 
     def _save_owner_places(self, places: list[dict]) -> None:
         """Overwrites the current user's place list in storage."""
@@ -114,10 +106,11 @@ class PlaceManager:
         """
         existing = self._load_owner_places()
 
-        # Prevent duplicates (case-insensitive)
-        if any(p["name"].lower() == name.lower() for p in existing):
-            print(f"[INFO] '{name}' is already in your list.")
-            return None
+        # Check for duplicates (case-insensitive)
+        for p in existing:
+            if p["name"].lower() == name.lower():
+                print(f"[INFO] '{name}' is already in your list.")
+                return None
 
         service = GeocodingService()
         point = service.get_coordinates(name)
@@ -130,18 +123,25 @@ class PlaceManager:
         existing.append(place.to_dict())
         self._save_owner_places(existing)
         return place
-
+    
     def list_places(self) -> list["Place"]:
         """Returns all places belonging to the current user."""
-        return [Place.from_dict(p) for p in self._load_owner_places()]
-
-    def remove_place(self, name: str) -> bool:
-        """
-        Removes a place by name. Returns True if removed, False if not found.
-        """
         existing = self._load_owner_places()
-        updated = [p for p in existing if p["name"].lower() != name.lower()]
+        result = []
+        for p in existing:
+            result.append(Place.from_dict(p))
+        return result
+    
+    def remove_place(self, name: str) -> bool:
+        """Removes a place by name. Returns True if removed, False if not found."""
+        existing = self._load_owner_places()
+        updated = []
 
+        for p in existing:
+            if p["name"].lower() != name.lower():
+                updated.append(p)
+
+        # If nothing was removed, the sizes are equal
         if len(updated) == len(existing):
             return False
 
