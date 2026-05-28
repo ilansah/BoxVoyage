@@ -54,6 +54,20 @@ class TestPlace(unittest.TestCase):
         self.assertIn("48.8566", repr_str)
         self.assertIn("2.3522", repr_str)
 
+    def test_search_and_add_success(self):
+        """search_and_add must return a Place when geocoding succeeds."""
+        manager = self._make_manager({"alice": []})
+
+        mock_service = MagicMock()
+        mock_service.get_coordinates.return_value = GeoPoint(lat=35.682, lon=139.762)
+
+        with patch("core.places.GeocodingService", return_value=mock_service):
+            result = manager.search_and_add("Tokyo")
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result.name, "Tokyo")
+        self.assertEqual(result.owner, "alice")
+
 
 class TestGeocodingService(unittest.TestCase):
     """Tests for the GeocodingService class using real Nominatim API."""
