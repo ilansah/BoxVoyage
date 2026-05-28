@@ -72,3 +72,32 @@ class DistanceCalculator:
         
         distance = DistanceCalculator.EARTH_RADIUS * math.acos(cos_angle)
         return distance
+
+
+class TourOptimiszer:
+    """
+    Optimizes tours through multiple geographic points using Nearest Neighbor.
+    
+    This class works with GeoPoint objects and uses DistanceCalculator to compute distances.
+    """
+
+    @staticmethod
+    def calculate_tour_distance(tour: list[GeoPoint]) -> float:
+        """
+        Calculates the total distance of a tour.
+        
+        Args:
+            tour (list[GeoPoint]): Cities in tour order
+        
+        Returns:
+            float: Total distance in kilometers
+        """
+        total_tour = 0.00
+        for i in range(len(tour)-1):
+            v1 = tour[i]
+            v2 = tour[i+1]
+            total_tour += DistanceCalculator.distance(v1,v2)
+        total_tour += DistanceCalculator.distance(tour[-1],tour[0])
+        return total_tour
+
+

@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from core.algorithm import GeoPoint, DistanceCalculator
+from core.algorithm import GeoPoint, DistanceCalculator, TourOptimiszer
 
 
 class TestGeoPoint(unittest.TestCase):
@@ -99,6 +99,17 @@ class TestDistanceCalculator(unittest.TestCase):
         # Distance should be half of Earth's circumference
         expected = math.pi * 6378.197
         self.assertAlmostEqual(distance, expected, delta=1.0)
+
+    def test_total_tour(self):
+        tokyo = GeoPoint(lat=35.682, lon=139.762)
+        sydney = GeoPoint(lat=-33.8688, lon=151.2093)
+        south = GeoPoint(lat=0.0, lon=180.0)
+        list = []
+        list.append(tokyo)
+        list.append(sydney)
+        list.append(south)
+        tour = TourOptimiszer.calculate_tour_distance(list)
+        self.assertAlmostEqual(tour, 18407.597305933155)
 
 
 if __name__ == "__main__":
