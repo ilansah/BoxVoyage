@@ -1,7 +1,7 @@
 # test_manual.py — fichier temporaire, à supprimer après vérification
 
-from src.Core.algorithm import GeoPoint
-from src.Core.places import Place, GeocodingService
+from src.core.algorithm import GeoPoint
+from src.core.places import Place, GeocodingService
 from src.data.storage import JsonStorage
 
 print("=== GeoPoint ===")
