@@ -1,0 +1,50 @@
+{
+  "vic": [
+    {
+      "id": "cb55677d",
+      "name": "test",
+      "owner": "vic",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
+          "owner": "vic"
+        }
+      ]
+    },
+    {
+      "id": "60e5bf60",
+      "name": "test2",
+      "owner": "vic",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
+          "owner": "vic"
+        },
+        {
+          "name": "Paris",
+          "lat": 48.8534951,
+          "lon": 2.3483915,
+          "owner": "vic"
+        },
+        {
+          "name": "tours",
+          "lat": 47.3900474,
+          "lon": 0.6889268,
+          "owner": "vic"
+        },
+        {
+          "name": "Nice",
+          "lat": 43.7009358,
+          "lon": 7.2683912,
+          "owner": "vic"
+        }
+      ]
+    }
+  ]
+}

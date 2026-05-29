@@ -12,7 +12,7 @@ import json
 import math
 import os
 import requests
-from core.algorithm import GeoPoint
+from src.core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
 
 
@@ -127,6 +127,25 @@ class PlaceManager:
         existing.append(place.to_dict())
         self._save_owner_places(existing)
         return place
+    
+    def geocode_place(self, name: str) -> "Place | None":
+        """
+        Geocodes a place name WITHOUT adding it to the user's place list.
+        Useful for adding places to tours without saving them globally.
+        
+        Args:
+            name (str): The place name or address to geocode.
+            
+        Returns:
+            Place if found, None otherwise.
+        """
+        service = GeocodingService()
+        point = service.get_coordinates(name)
+
+        if point is None:
+            return None
+
+        return Place(name=name, point=point, owner=self.owner)
     
     def list_places(self) -> list["Place"]:
         """Returns all places belonging to the current user."""
