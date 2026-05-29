@@ -9,7 +9,7 @@ Handles:
 
 from core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
-from data.storage import JsonStorage
+
 
 
 class Place:
