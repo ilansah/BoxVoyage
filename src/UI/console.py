@@ -9,7 +9,8 @@ def display_menu_login():
     print("\n=== BoxVoyage ===")
     print("1. S'inscrire")
     print("2. Se connecter")
-    print("3. Quitter")
+    print("P. Voir les voyages publics")
+    print("Q. Quitter")
 
 
 def display_menu_tours():
@@ -17,36 +18,73 @@ def display_menu_tours():
     print("1. Voir les voyages")
     print("2. Ajouter un voyage")
     print("3. Supprimer un voyage")
+    print("P. Voir les voyages publics")
     print("Q. Se déconnecter")
 
 
 def display_menu_in_tour(tour):
-    print(f"\n=== Voyage: {tour.name} ===")
+    visibility = "PUBLIC" if tour.is_public else "PRIVÉ"
+    print(f"\n=== Voyage: {tour.name} [{visibility}] ===")
     print(f"Villes: {len(tour.places)}")
     print("\n1. Ajouter une ville")
     print("2. Voir les villes du voyage")
     print("3. Supprimer une ville")
     print("4. Lancer l'algorithme optimal")
-    print("5. Retour aux voyages")
+    print("5. Changer la visibilité")
+    print("6. Retour aux voyages")
+
+
+def display_public_tours(public_tours):
+    """Displays all public tours with their cities and distances."""
+    if not public_tours:
+        print("✗ Aucun voyage public disponible")
+        return
+    print(f"\n=== Voyages publics ({len(public_tours)}) ===")
+    for tour in public_tours:
+        print(f"\n  [{tour.owner}] {tour.name} — {len(tour.places)} villes")
+        if tour.places:
+            total = 0.0
+            for i, place in enumerate(tour.places):
+                if i == 0:
+                    print(f"    1. {place['name']}")
+                else:
+                    prev = tour.places[i - 1]
+                    dist = DistanceCalculator.distance(
+                        GeoPoint(prev['lat'], prev['lon']),
+                        GeoPoint(place['lat'], place['lon'])
+                    )
+                    total += dist
+                    print(f"    {i+1}. {place['name']} (+{dist:.1f} km)")
+            # Return leg
+            if len(tour.places) > 1:
+                first = tour.places[0]
+                last = tour.places[-1]
+                ret = DistanceCalculator.distance(
+                    GeoPoint(last['lat'], last['lon']),
+                    GeoPoint(first['lat'], first['lon'])
+                )
+                total += ret
+                print(f"    → Retour à {first['name']} (+{ret:.1f} km)")
+            print(f"    Distance totale: {total:.1f} km")
 
 
 def main():
     storage_users = JsonStorage("dataBase/users.json")
     storage_places = JsonStorage("dataBase/places.json")
     storage_tours = JsonStorage("dataBase/tours.json")
-    
+
     auth = AuthManager(storage_users)
     place_manager = None
     tour_manager = None
-    
+
     selected_tour = None
-    
+
     while True:
         # ============ MENU LOGIN ============
         if auth.get_current_user() is None:
             display_menu_login()
             choice = input("\nChoix: ").strip().lower()
-            
+
             if choice == "1":
                 username = input("Username: ")
                 password = input("Password: ")
@@ -55,7 +93,7 @@ def main():
                     print("✓ Inscrit!")
                 except Exception as e:
                     print(f"✗ Erreur: {e}")
-            
+
             elif choice == "2":
                 username = input("Username: ")
                 password = input("Password: ")
@@ -66,32 +104,34 @@ def main():
                     tour_manager = TourManager(storage_tours, username)
                 except Exception as e:
                     print(f"✗ Erreur: {e}")
-            
-            elif choice == "3":
+
+            elif choice == "p":
+                # Public tours are accessible without login
+                tmp_manager = TourManager(storage_tours, "")
+                display_public_tours(tmp_manager.list_public_tours())
+
+            elif choice == "q":
                 print("Au revoir!")
                 break
+
             else:
                 print("Option invalide")
-        
+
         # ============ MENU VOYAGES ============
         elif selected_tour is None:
             user = auth.get_current_user()
             tours = tour_manager.list_tours()
-            
+
             display_menu_tours()
             choice = input("\nChoix: ").strip().lower()
-            
-            if choice == "q":
-                auth.logout()
-                print("✓ Déconnexion réussie")
-            
-            elif choice == "1":
+
+            if choice == "1":
                 # Voir les voyages
                 if tours:
                     print(f"\n=== Voir mes voyages ({len(tours)}) ===")
                     for i, tour in enumerate(tours, 1):
-                        nb_places = len(tour.places)
-                        print(f"  {i}. {tour.name} ({nb_places} villes)")
+                        visibility = "PUBLIC" if tour.is_public else "PRIVÉ"
+                        print(f"  {i}. {tour.name} [{visibility}] ({len(tour.places)} villes)")
                     idx_str = input("\nSélectionner un voyage (numéro): ")
                     if idx_str.isdigit():
                         idx = int(idx_str) - 1
@@ -102,7 +142,7 @@ def main():
                             print("✗ Numéro invalide")
                 else:
                     print("✗ Vous n'avez pas de voyage")
-            
+
             elif choice == "2":
                 # Ajouter un voyage
                 tour_name = input("Nom du voyage: ")
@@ -112,14 +152,13 @@ def main():
                     print(f"✓ Voyage '{tour_name}' créé!")
                 except Exception as e:
                     print(f"✗ Erreur: {e}")
-            
+
             elif choice == "3":
                 # Supprimer un voyage
                 if tours:
                     print(f"\n=== Supprimer un voyage ({len(tours)}) ===")
                     for i, tour in enumerate(tours, 1):
-                        nb_places = len(tour.places)
-                        print(f"  {i}. {tour.name} ({nb_places} villes)")
+                        print(f"  {i}. {tour.name} ({len(tour.places)} villes)")
                     idx_str = input("\nSélectionner un voyage à supprimer (numéro): ")
                     if idx_str.isdigit():
                         idx = int(idx_str) - 1
@@ -131,21 +170,27 @@ def main():
                             print("✗ Numéro invalide")
                 else:
                     print("✗ Vous n'avez pas de voyage")
-            
+
+            elif choice == "p":
+                display_public_tours(tour_manager.list_public_tours())
+
+            elif choice == "q":
+                auth.logout()
+                print("✓ Déconnexion réussie")
+
             else:
                 print("Option invalide")
-        
+
         # ============ MENU DANS UN VOYAGE ============
         else:
             display_menu_in_tour(selected_tour)
             choice = input("\nChoix: ").strip()
-            
+
             if choice == "1":
                 # Ajouter une ville
                 print("\nAjouter une ville au voyage:")
                 city_name = input("Nom de la ville (ou adresse): ")
                 try:
-                    # Utiliser le geocoding SANS ajouter à la liste personnelle
                     place = place_manager.geocode_place(city_name)
                     if place:
                         added = tour_manager.add_place_to_tour(selected_tour.id, place)
@@ -158,7 +203,7 @@ def main():
                         print("✗ Ville non trouvée")
                 except Exception as e:
                     print(f"✗ Erreur: {e}")
-            
+
             elif choice == "2":
                 # Voir les villes du voyage
                 if selected_tour.places:
@@ -167,7 +212,7 @@ def main():
                         print(f"  {i}. {place['name']}")
                 else:
                     print("Le voyage est vide")
-            
+
             elif choice == "3":
                 # Supprimer une ville
                 if not selected_tour.places:
@@ -185,22 +230,16 @@ def main():
                             print(f"✓ {removed['name']} supprimé du voyage")
                         else:
                             print("✗ Numéro invalide")
-            
+
             elif choice == "4":
                 # Lancer l'algorithme optimal
                 if len(selected_tour.places) < 2:
                     print("✗ Il faut au moins 2 villes pour optimiser")
                 else:
                     print(f"\n⏳ Optimisation du voyage...")
-                    
-                    # Utiliser la méthode qui fait tous les calculs
                     result = TourOptimiszer.optimize_places_with_distances(selected_tour.places)
-                    
-                    # Mettre à jour le tour avec les places optimisées
                     selected_tour.places = result['optimized_places']
                     tour_manager.update_tour_places(selected_tour.id, result['optimized_places'])
-                    
-                    # Afficher les résultats
                     print(f"\n✓ Voyage optimisé:")
                     for i, segment in enumerate(result['segments']):
                         if i == 0:
@@ -210,13 +249,20 @@ def main():
                                 print(f"  → Retour à {segment['to']} (+{segment['distance']:.1f} km)")
                             else:
                                 print(f"  {i+1}. {segment['to']} (+{segment['distance']:.1f} km)")
-                    
                     print(f"\nDistance totale: {result['total_distance']:.1f} km")
-            
+
             elif choice == "5":
+                # Toggle visibility
+                new_visibility = not selected_tour.is_public
+                tour_manager.set_visibility(selected_tour.id, new_visibility)
+                selected_tour.is_public = new_visibility
+                status = "public" if new_visibility else "privé"
+                print(f"✓ Voyage maintenant {status}")
+
+            elif choice == "6":
                 # Retour aux voyages
                 selected_tour = None
-            
+
             else:
                 print("Option invalide")
 

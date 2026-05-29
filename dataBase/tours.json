@@ -64,7 +64,7 @@
       "id": "eb6bb7cc",
       "name": "Angleterre",
       "owner": "Chahine",
-      "is_public": false,
+      "is_public": true,
       "places": [
         {
           "name": "Manchester",
