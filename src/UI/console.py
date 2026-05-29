@@ -151,10 +151,12 @@ def main():
                     # Utiliser le geocoding SANS ajouter à la liste personnelle
                     place = place_manager.geocode_place(city_name)
                     if place:
-                        # Ajouter au tour
-                        tour_manager.add_place_to_tour(selected_tour.id, place)
-                        selected_tour.places.append(place.to_dict())
-                        print(f"✓ {place.name} ajouté au voyage!")
+                        added = tour_manager.add_place_to_tour(selected_tour.id, place)
+                        if added:
+                            selected_tour.places.append(place.to_dict())
+                            print(f"✓ {place.name} ajouté au voyage!")
+                        else:
+                            print(f"✗ {place.name} est déjà dans ce voyage")
                     else:
                         print("✗ Ville non trouvée")
                 except Exception as e:

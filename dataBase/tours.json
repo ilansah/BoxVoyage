@@ -85,6 +85,20 @@
           "owner": "Chahine"
         }
       ]
+    },
+    {
+      "id": "fde80145",
+      "name": "France",
+      "owner": "Chahine",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
+          "owner": "Chahine"
+        }
+      ]
     }
   ],
   "aa": [
