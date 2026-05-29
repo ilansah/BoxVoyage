@@ -181,11 +181,19 @@ class TourOptimiszer:
     @staticmethod
     def optimize_places_with_distances(places_list: list[dict], start_city_name: str = None) -> dict:
         """
-        Optimizes a list of places using Nearest Neighbor + 2-opt, and calculates
-        distances between each stop.
+        Optimizes a tour through multiple places and calculates distances.
+        
+        Process:
+        1. Convert places to GeoPoints (coordinates)
+        2. Run nearest_neighbor() to find initial optimal order
+        3. Run 2-opt to improve that order
+        4. Reconstruct places in new order
+        5. Calculate distances between each step
+        6. Return ordered places + distances between each segment + total distance
 
         Args:
-            places_list (list[dict]): List of place dicts with 'lat', 'lon', 'name', 'owner'
+            places_list (list[dict]): List of cities with 'lat', 'lon', 'name', 'owner'
+            start_city_name (str): Optional starting city name. If provided, tour starts from this city.
 
         Returns:
             dict: {
@@ -201,16 +209,25 @@ class TourOptimiszer:
                 'total_distance': 0.0
             }
         
-        # Convert to GeoPoints
+        # STEP 1: Convert dicts {lat, lon, name} into simple GeoPoints (lat, lon)
         geopoints = [GeoPoint(p["lat"], p["lon"]) for p in places_list]
 
-        # Step 1: nearest neighbor for initial tour (excludes return point at end)
-        nn_tour = TourOptimiszer.nearest_neighbor(geopoints)
-        nn_tour_no_return = nn_tour[:-1]
+        # STEP 2: Find starting point if specified
+        start_point = None
+        if start_city_name:
+            for i, place in enumerate(places_list):
+                if place["name"] == start_city_name:
+                    start_point = geopoints[i]  # Use the existing GeoPoint from list
+                    break
 
-        # Step 2: 2-opt improvement
+        # STEP 3: Nearest Neighbor - finds initial order by always going to nearest unvisited city
+        nn_tour = TourOptimiszer.nearest_neighbor(geopoints, start_point)
+        nn_tour_no_return = nn_tour[:-1]  # Remove return point for 2-opt
+
+        # STEP 4: 2-opt - improves order by swapping segments
+        # Example: [A-B-C-D] -> test if [A-C-B-D] is shorter
         optimized_geopoints_raw = TourOptimiszer.two_opt(nn_tour_no_return)
-        optimized_geopoints = optimized_geopoints_raw + [optimized_geopoints_raw[0]]
+        optimized_geopoints = optimized_geopoints_raw + [optimized_geopoints_raw[0]]  # Add return to start
         
         # STEP 5: Find complete places (dicts) in new order
         # We only have coordinates, so match with original places
@@ -221,7 +238,7 @@ class TourOptimiszer:
                     optimized_places.append(place)
                     break
 
-        # Calculate distances between each segment
+        # STEP 6: Calculate distances between each pair of cities
         segments = []
         total_dist = 0.0
 
@@ -245,7 +262,7 @@ class TourOptimiszer:
                     'distance': dist
                 })
 
-        # Return leg (last city back to first)
+        # STEP 7: Distance for return trip (last city -> first city)
         last_gp = GeoPoint(optimized_places[-1]["lat"], optimized_places[-1]["lon"])
         first_gp = GeoPoint(optimized_places[0]["lat"], optimized_places[0]["lon"])
         dist_return = DistanceCalculator.distance(last_gp, first_gp)

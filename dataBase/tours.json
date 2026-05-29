@@ -18,12 +18,12 @@
       "id": "60e5bf60",
       "name": "test2",
       "owner": "vic",
-      "is_public": false,
+      "is_public": true,
       "places": [
         {
-          "name": "tours",
-          "lat": 47.3900474,
-          "lon": 0.6889268,
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
           "owner": "vic"
         },
         {
@@ -33,15 +33,15 @@
           "owner": "vic"
         },
         {
-          "name": "Lille",
-          "lat": 50.6365654,
-          "lon": 3.0635282,
+          "name": "tours",
+          "lat": 47.3900474,
+          "lon": 0.6889268,
           "owner": "vic"
         },
         {
-          "name": "Nice",
-          "lat": 43.7009358,
-          "lon": 7.2683912,
+          "name": "bordeaux",
+          "lat": 44.841225,
+          "lon": -0.5800364,
           "owner": "vic"
         },
         {
@@ -51,9 +51,9 @@
           "owner": "vic"
         },
         {
-          "name": "bordeaux",
-          "lat": 44.841225,
-          "lon": -0.5800364,
+          "name": "Nice",
+          "lat": 43.7009358,
+          "lon": 7.2683912,
           "owner": "vic"
         }
       ]

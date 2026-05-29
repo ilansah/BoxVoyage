@@ -24,8 +24,11 @@ def display_menu_tours():
 
 def display_menu_in_tour(tour):
     visibility = "PUBLIC" if tour.is_public else "PRIVÉ"
+    start_city_text = ""
+    if hasattr(tour, '_start_city') and tour._start_city:
+        start_city_text = f" (départ: {tour._start_city})"
     print(f"\n=== Voyage: {tour.name} [{visibility}] ===")
-    print(f"Villes: {len(tour.places)}")
+    print(f"Villes: {len(tour.places)}{start_city_text}")
     print("\n1. Ajouter une ville")
     print("2. Voir les villes du voyage")
     print("3. Supprimer une ville")
