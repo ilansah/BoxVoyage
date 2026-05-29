@@ -21,6 +21,7 @@
       "is_public": true,
       "places": [
         {
+<<<<<<< HEAD
           "name": "Lille",
           "lat": 50.6365654,
           "lon": 3.0635282,
@@ -30,6 +31,11 @@
           "name": "Paris",
           "lat": 48.8534951,
           "lon": 2.3483915,
+=======
+          "name": "lens",
+          "lat": 50.4291723,
+          "lon": 2.8319805,
+>>>>>>> main
           "owner": "vic"
         },
         {
@@ -45,6 +51,7 @@
           "owner": "vic"
         },
         {
+<<<<<<< HEAD
           "name": "nimes",
           "lat": 43.8374249,
           "lon": 4.3600687,
@@ -54,6 +61,23 @@
           "name": "Nice",
           "lat": 43.7009358,
           "lon": 7.2683912,
+=======
+          "name": "bordeaux",
+          "lat": 44.841225,
+          "lon": -0.5800364,
+>>>>>>> main
+          "owner": "vic"
+        },
+        {
+          "name": "tours",
+          "lat": 47.3900474,
+          "lon": 0.6889268,
+          "owner": "vic"
+        },
+        {
+          "name": "Paris",
+          "lat": 48.8534951,
+          "lon": 2.3483915,
           "owner": "vic"
         }
       ]
@@ -67,21 +91,27 @@
       "is_public": true,
       "places": [
         {
-          "name": "Manchester",
-          "lat": 53.4424618,
-          "lon": -2.2324547,
-          "owner": "Chahine"
-        },
-        {
           "name": "Liverpool",
           "lat": 53.3933411,
           "lon": -2.9166389,
           "owner": "Chahine"
         },
         {
-          "name": "Bristol",
-          "lat": 51.4538022,
-          "lon": -2.5972985,
+          "name": "Birmingham",
+          "lat": 52.4948994,
+          "lon": -1.8518439,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Bath",
+          "lat": 51.3813864,
+          "lon": -2.3596963,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Oxford",
+          "lat": 51.7520131,
+          "lon": -1.2578499,
           "owner": "Chahine"
         },
         {
@@ -95,21 +125,59 @@
           "lat": 50.8214626,
           "lon": -0.1400561,
           "owner": "Chahine"
-        }
-      ]
-    },
-    {
-      "id": "fde80145",
-      "name": "France",
-      "owner": "Chahine",
-      "is_public": false,
-      "places": [
+        },
+        {
+          "name": "hem",
+          "lat": 50.6540895,
+          "lon": 3.1839429,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Cambridge",
+          "lat": 52.1975846,
+          "lon": 0.1391537,
+          "owner": "Chahine"
+        },
+        {
+          "name": "York",
+          "lat": 53.9656579,
+          "lon": -1.0743052,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Manchester",
+          "lat": 53.4424618,
+          "lon": -2.2324547,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Bristol",
+          "lat": 51.4538022,
+          "lon": -2.5972985,
+          "owner": "Chahine"
+        },
         {
           "name": "Lille",
           "lat": 50.6365654,
           "lon": 3.0635282,
           "owner": "Chahine"
+        },
+        {
+          "name": "roubaix",
+          "lat": 50.6915893,
+          "lon": 3.1741734,
+          "owner": "Chahine"
+        },
+        {
+          "name": "tourcoing",
+          "lat": 50.7235038,
+          "lon": 3.1605714,
+          "owner": "Chahine"
         }
+      ],
+      "hotels": [
+        "Bath",
+        "hem"
       ]
     }
   ],
@@ -125,6 +193,53 @@
           "lat": 38.7077507,
           "lon": -9.1365919,
           "owner": "aa"
+        }
+      ]
+    },
+    {
+      "id": "6eb431ce",
+      "name": "france",
+      "owner": "aa",
+      "is_public": true,
+      "places": []
+    }
+  ],
+  "ilan": [
+    {
+      "id": "e227067a",
+      "name": "France",
+      "owner": "ilan",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
+          "owner": "ilan"
+        },
+        {
+          "name": "Dunkerque",
+          "lat": 51.0347708,
+          "lon": 2.3772525,
+          "owner": "ilan"
+        },
+        {
+          "name": "Hazebrouck",
+          "lat": 50.7226113,
+          "lon": 2.5360331,
+          "owner": "ilan"
+        },
+        {
+          "name": "Paris",
+          "lat": 48.8534951,
+          "lon": 2.3483915,
+          "owner": "ilan"
+        },
+        {
+          "name": "Lens",
+          "lat": 50.4291723,
+          "lon": 2.8319805,
+          "owner": "ilan"
         }
       ]
     }

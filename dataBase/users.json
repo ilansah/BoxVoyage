@@ -18,5 +18,13 @@
   "aa": {
     "username": "aa",
     "password_hash": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506"
+  },
+  "ilan": {
+    "username": "ilan",
+    "password_hash": "9f784a26c72ff868dcecd122d67900c5f415824628bc7cfa3244fe165cf9cf7e"
+  },
+  "a": {
+    "username": "a",
+    "password_hash": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
   }
 }
