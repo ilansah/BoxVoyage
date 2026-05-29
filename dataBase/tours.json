@@ -39,9 +39,27 @@
           "owner": "vic"
         },
         {
+          "name": "bordeaux",
+          "lat": 44.841225,
+          "lon": -0.5800364,
+          "owner": "vic"
+        },
+        {
+          "name": "nimes",
+          "lat": 43.8374249,
+          "lon": 4.3600687,
+          "owner": "vic"
+        },
+        {
           "name": "Nice",
           "lat": 43.7009358,
           "lon": 7.2683912,
+          "owner": "vic"
+        },
+        {
+          "name": "OSAKA",
+          "lat": 34.6937569,
+          "lon": 135.5014539,
           "owner": "vic"
         }
       ]

@@ -200,3 +200,23 @@ class TourManager:
                 return True
 
         return False
+    
+    def delete_tour(self, tour_id: str) -> bool:
+        """
+        Deletes a tour by id.
+
+        Args:
+            tour_id (str): The id of the tour to delete.
+
+        Returns:
+            bool: True if the tour was found and deleted, False otherwise.
+        """
+        raw_tours = self._load_owner_tours()
+        updated = [t for t in raw_tours if t["id"] != tour_id]
+        
+        # Si rien n'a été supprimé, return False
+        if len(updated) == len(raw_tours):
+            return False
+        
+        self._save_owner_tours(updated)
+        return True
