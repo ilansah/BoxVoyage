@@ -166,7 +166,7 @@ class TourManager:
 
         for t in raw_tours:
             if t["id"] == tour_id:
-                # Vérifier si la ville est déjà présente (insensible à la casse)
+                # Check if the city already exists
                 already_exists = any(
                     p["name"].lower() == place.name.lower()
                     for p in t["places"]
@@ -221,9 +221,19 @@ class TourManager:
         raw_tours = self._load_owner_tours()
         updated = [t for t in raw_tours if t["id"] != tour_id]
         
-        # Si rien n'a été supprimé, return False
+        # If nothing was removed, return False
         if len(updated) == len(raw_tours):
             return False
         
         self._save_owner_tours(updated)
         return True
+
+    def list_public_tours(self) -> list[Tour]:
+        """Returns all public tours from all users."""
+        data = self.storage.load()
+        result = []
+        for owner_tours in data.values():
+            for t in owner_tours:
+                if t.get("is_public", False):
+                    result.append(Tour.from_dict(t))
+        return result
