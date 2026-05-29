@@ -226,27 +226,21 @@
       "is_public": true,
       "places": [
         {
-          "name": "Marseille",
-          "lat": 43.2963986,
-          "lon": 5.3777888,
-          "owner": "ilan"
-        },
-        {
           "name": "Bandol",
           "lat": 43.1357717,
           "lon": 5.7523647,
           "owner": "ilan"
         },
         {
-          "name": "Toulon",
-          "lat": 43.1257311,
-          "lon": 5.9304919,
+          "name": "Marseille",
+          "lat": 43.2963986,
+          "lon": 5.3777888,
           "owner": "ilan"
         },
         {
-          "name": "Monaco",
-          "lat": 43.7323492,
-          "lon": 7.4276832,
+          "name": "Perpignan",
+          "lat": 42.6985304,
+          "lon": 2.8953121,
           "owner": "ilan"
         },
         {
@@ -256,13 +250,27 @@
           "owner": "ilan"
         },
         {
-          "name": "Perpignan",
-          "lat": 42.6985304,
-          "lon": 2.8953121,
+          "name": "Monaco",
+          "lat": 43.7323492,
+          "lon": 7.4276832,
+          "owner": "ilan"
+        },
+        {
+          "name": "Saint-tropez",
+          "lat": 43.2727191,
+          "lon": 6.6405225,
+          "owner": "ilan"
+        },
+        {
+          "name": "Toulon",
+          "lat": 43.1257311,
+          "lon": 5.9304919,
           "owner": "ilan"
         }
       ],
-      "hotels": []
+      "hotels": [
+        "Marseille"
+      ]
     }
   ]
 }
