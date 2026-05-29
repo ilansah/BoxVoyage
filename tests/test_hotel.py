@@ -8,11 +8,11 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from core.hotel import Hotel
-from core.places import Place
-from core.algorithm import GeoPoint
+from src.core.hotel import Hotel
+from src.core.places import Place
+from src.core.algorithm import GeoPoint
 
 class TestHotel(unittest.TestCase):
 

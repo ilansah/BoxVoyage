@@ -3,9 +3,9 @@ import unittest
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from core.algorithm import GeoPoint, DistanceCalculator, TourOptimiszer
+from src.core.algorithm import GeoPoint, DistanceCalculator, TourOptimiszer
 
 
 class TestGeoPoint(unittest.TestCase):

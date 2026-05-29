@@ -1,9 +1,9 @@
-from core.auth import AuthManager
-from core.places import PlaceManager, Place
-from core.tours import TourManager
-from core.algorithm import DistanceCalculator, GeoPoint, TourOptimiszer
-from core.hotel import Hotel
-from data.storage import JsonStorage
+from src.core.auth import AuthManager
+from src.core.places import PlaceManager, Place
+from src.core.tours import TourManager
+from src.core.algorithm import DistanceCalculator, GeoPoint, TourOptimiszer
+from src.core.hotel import Hotel
+from src.data.storage import JsonStorage
 
 
 def display_menu_login():

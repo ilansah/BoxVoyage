@@ -6,9 +6,9 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from core.algorithm import TourOptimiszer, DistanceCalculator, GeoPoint
+from src.core.algorithm import TourOptimiszer, DistanceCalculator, GeoPoint
 
 
 class TestAlgorithmEdgeCases(unittest.TestCase):

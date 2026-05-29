@@ -3,11 +3,11 @@ import sys
 import unittest
 from unittest.mock import MagicMock
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from core.tours import Tour, TourManager
-from core.algorithm import GeoPoint
-from core.places import Place
+from src.core.tours import Tour, TourManager
+from src.core.algorithm import GeoPoint
+from src.core.places import Place
 
 
 def make_place(name: str, lat: float, lon: float) -> Place:

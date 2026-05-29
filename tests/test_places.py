@@ -9,10 +9,10 @@ import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from core.places import Place, PlaceManager, GeocodingService
-from core.algorithm import GeoPoint
+from src.core.places import Place, PlaceManager, GeocodingService
+from src.core.algorithm import GeoPoint
 
 
 # Place tests
@@ -137,7 +137,7 @@ class TestPlaceManager(unittest.TestCase):
         mock_service = MagicMock()
         mock_service.get_coordinates.return_value = None
 
-        with patch("core.places.GeocodingService", return_value=mock_service):
+        with patch("src.core.places.GeocodingService", return_value=mock_service):
             result = manager.search_and_add("UnknownCity")
 
         self.assertIsNone(result)
@@ -149,7 +149,7 @@ class TestPlaceManager(unittest.TestCase):
         mock_service = MagicMock()
         mock_service.get_coordinates.return_value = GeoPoint(lat=48.85, lon=2.35)
 
-        with patch("core.places.GeocodingService", return_value=mock_service):
+        with patch("src.core.places.GeocodingService", return_value=mock_service):
             result = manager.search_and_add("Paris")
 
         self.assertIsNotNone(result)
@@ -163,7 +163,7 @@ class TestPlaceManager(unittest.TestCase):
         mock_service = MagicMock()
         mock_service.get_coordinates.return_value = GeoPoint(lat=48.85, lon=2.35)
 
-        with patch("core.places.GeocodingService", return_value=mock_service):
+        with patch("src.core.places.GeocodingService", return_value=mock_service):
             manager.search_and_add("Paris")
 
         self.assertTrue(manager.storage.save.called)
