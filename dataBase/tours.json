@@ -46,5 +46,45 @@
         }
       ]
     }
+  ],
+  "Chahine": [
+    {
+      "id": "eb6bb7cc",
+      "name": "Angleterre",
+      "owner": "Chahine",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Manchester",
+          "lat": 53.4424618,
+          "lon": -2.2324547,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Liverpool",
+          "lat": 53.3933411,
+          "lon": -2.9166389,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Bristol",
+          "lat": 51.4538022,
+          "lon": -2.5972985,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Londres",
+          "lat": 51.5074456,
+          "lon": -0.1277653,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Brighton",
+          "lat": 50.8214626,
+          "lon": -0.1400561,
+          "owner": "Chahine"
+        }
+      ]
+    }
   ]
 }
