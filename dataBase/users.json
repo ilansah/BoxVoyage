@@ -10,5 +10,13 @@
   "vic": {
     "username": "vic",
     "password_hash": "866d116d21281a3aa9375c6deca295bfe67c9989581578b10747b59da428e479"
+  },
+  "Chahine": {
+    "username": "Chahine",
+    "password_hash": "3b8e6dcad2512ea7a15727236f732bac7c58f43d204b8579d5bcc13bbe3ee6b7"
+  },
+  "aa": {
+    "username": "aa",
+    "password_hash": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506"
   }
 }

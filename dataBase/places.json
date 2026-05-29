@@ -6,5 +6,19 @@
       "lon": 3.0635282,
       "owner": "vic"
     }
+  ],
+  "Chahine": [
+    {
+      "name": "Tokyo",
+      "lat": 35.6768601,
+      "lon": 139.7638947,
+      "owner": "Chahine"
+    },
+    {
+      "name": "Paris",
+      "lat": 48.8588897,
+      "lon": 2.320041,
+      "owner": "Chahine"
+    }
   ]
 }
