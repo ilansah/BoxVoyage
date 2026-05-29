@@ -12,7 +12,8 @@
           "lon": 3.0635282,
           "owner": "vic"
         }
-      ]
+      ],
+      "hotels": []
     },
     {
       "id": "60e5bf60",
@@ -21,65 +22,38 @@
       "is_public": true,
       "places": [
         {
-<<<<<<< HEAD
-          "name": "Lille",
+          "name": "lille",
           "lat": 50.6365654,
           "lon": 3.0635282,
           "owner": "vic"
         },
         {
+          "name": "tours",
+          "lat": 47.3900474,
+          "lon": 0.6889268,
+          "owner": "vic"
+        },
+        {
+          "name": "bordeaux",
+          "lat": 44.841225,
+          "lon": -0.5800364,
+          "owner": "vic"
+        },
+        {
           "name": "Paris",
           "lat": 48.8534951,
           "lon": 2.3483915,
-=======
+          "owner": "vic"
+        },
+        {
           "name": "lens",
           "lat": 50.4291723,
           "lon": 2.8319805,
->>>>>>> main
-          "owner": "vic"
-        },
-        {
-          "name": "tours",
-          "lat": 47.3900474,
-          "lon": 0.6889268,
-          "owner": "vic"
-        },
-        {
-          "name": "bordeaux",
-          "lat": 44.841225,
-          "lon": -0.5800364,
-          "owner": "vic"
-        },
-        {
-<<<<<<< HEAD
-          "name": "nimes",
-          "lat": 43.8374249,
-          "lon": 4.3600687,
-          "owner": "vic"
-        },
-        {
-          "name": "Nice",
-          "lat": 43.7009358,
-          "lon": 7.2683912,
-=======
-          "name": "bordeaux",
-          "lat": 44.841225,
-          "lon": -0.5800364,
->>>>>>> main
-          "owner": "vic"
-        },
-        {
-          "name": "tours",
-          "lat": 47.3900474,
-          "lon": 0.6889268,
-          "owner": "vic"
-        },
-        {
-          "name": "Paris",
-          "lat": 48.8534951,
-          "lon": 2.3483915,
           "owner": "vic"
         }
+      ],
+      "hotels": [
+        "lille"
       ]
     }
   ],
