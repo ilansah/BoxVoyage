@@ -151,7 +151,7 @@ class TourOptimiszer:
         return total_tour
     
     @staticmethod
-    def optimize_places_with_distances(places_list: list[dict]) -> dict:
+    def optimize_places_with_distances(places_list: list[dict], start_city_name: str = None) -> dict:
         """
         Optimizes a list of places and calculates distances between each stop.
         
@@ -160,9 +160,9 @@ class TourOptimiszer:
         
         Returns:
             dict: {
-                'optimized_places': list of places in optimal order,
-                'segments': list of dicts with distance between consecutive stops,
-                'total_distance': total distance including return to start
+                'optimized_places': cities in optimal order,
+                'segments': distances between each pair of consecutive cities,
+                'total_distance': total distance (round trip)
             }
         """
         if len(places_list) < 2:
@@ -178,7 +178,8 @@ class TourOptimiszer:
         # Optimiser l'ordre
         optimized_geopoints = TourOptimiszer.nearest_neighbor(geopoints)
         
-        # Retrouver les places dans l'ordre optimisé
+        # STEP 5: Find complete places (dicts) in new order
+        # We only have coordinates, so match with original places
         optimized_places = []
         for opt_gp in optimized_geopoints[:-1]:
             for place in places_list:
@@ -192,13 +193,15 @@ class TourOptimiszer:
         
         for i in range(len(optimized_places)):
             if i == 0:
+                # First city: no previous distance
                 segments.append({
                     'from': None,
                     'to': optimized_places[0]['name'],
                     'distance': 0.0
                 })
             else:
-                prev_gp = GeoPoint(optimized_places[i-1]["lat"], optimized_places[i-1]["lon"])
+                # Calculate distance between previous city and current city
+                prev_gp = GeoPoint(optimized_places[i - 1]["lat"], optimized_places[i - 1]["lon"])
                 curr_gp = GeoPoint(optimized_places[i]["lat"], optimized_places[i]["lon"])
                 dist = DistanceCalculator.distance(prev_gp, curr_gp)
                 total_dist += dist
@@ -207,8 +210,8 @@ class TourOptimiszer:
                     'to': optimized_places[i]['name'],
                     'distance': dist
                 })
-        
-        # Distance du dernier au premier (retour)
+
+        # STEP 7: Distance for return trip (last city -> first city)
         last_gp = GeoPoint(optimized_places[-1]["lat"], optimized_places[-1]["lon"])
         first_gp = GeoPoint(optimized_places[0]["lat"], optimized_places[0]["lon"])
         dist_return = DistanceCalculator.distance(last_gp, first_gp)
