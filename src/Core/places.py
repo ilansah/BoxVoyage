@@ -9,13 +9,8 @@ Handles:
 - PlaceManager: CRUD operations on a user's place list
 """
 
-import json
-import math
-import os
-import requests
-from src.core.algorithm import GeoPoint
+from core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
-from src.data.storage import JsonStorage
 
 
 class Place:
@@ -54,7 +49,6 @@ class Place:
 
 
 
-from src.core.algorithm import GeoPoint
 
 class GeocodingService:
     """
