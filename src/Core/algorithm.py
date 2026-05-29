@@ -109,7 +109,7 @@ class TourOptimiszer:
         tour = [current]         # Tour path starting with start_point
         unvisited.remove(current)  # Mark as visited
         
-        # Visit all remaining cities
+        # Build the tour greedily: always go to the nearest unvisited city
         while unvisited:
             # Find nearest unvisited city
             best_city = None

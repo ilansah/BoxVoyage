@@ -10,18 +10,12 @@ from core.algorithm import GeoPoint
 from core.places import Place
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def make_place(name: str, lat: float, lon: float) -> Place:
     """Creates a Place object for use in tests."""
     return Place(name=name, point=GeoPoint(lat=lat, lon=lon), owner="alice")
 
 
-# ---------------------------------------------------------------------------
 # Tour tests
-# ---------------------------------------------------------------------------
 
 class TestTour(unittest.TestCase):
 
@@ -73,9 +67,7 @@ class TestTour(unittest.TestCase):
         self.assertEqual(tour2.id, self.tour.id)
 
 
-# ---------------------------------------------------------------------------
-# TourManager tests (with mocked storage — no file system required)
-# ---------------------------------------------------------------------------
+# TourManager tests
 
 class TestTourManager(unittest.TestCase):
 

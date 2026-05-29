@@ -2,8 +2,7 @@
 places.py — Place management and geographic geocoding.
 
 Handles:
-- GeoPoint: geographic coordinate representation (placeholder, will be replaced
-  by the import from algorithm.py once P2 delivers their part)
+- GeoPoint: geographic coordinate representation
 - GeocodingService: converts a place name to coordinates via Nominatim API
 - Place: data object representing a user's place of interest
 - PlaceManager: CRUD operations on a user's place list
