@@ -1,5 +1,7 @@
 from core.auth import AuthManager
 from core.places import PlaceManager
+from core.tours import TourManager
+from core.algorithm import DistanceCalculator
 from data.storage import JsonStorage
 
 
@@ -35,10 +37,10 @@ def optimize_tour_order(places):
     if len(places) <= 1:
         return places
     
-    from src.core.algorithm import GeoPoint
-    
+    from core.algorithm import GeoPoint
+
     # Convertir les dicts en objets Place si nécessaire
-    from src.core.places import Place
+    from core.places import Place
     place_objs = []
     for p in places:
         if isinstance(p, dict):
@@ -196,8 +198,8 @@ def main():
                     tour_manager.update_tour_places(selected_tour.id, optimized)
                     
                     # Calculer la distance totale
-                    from src.core.places import Place
-                    from src.core.algorithm import GeoPoint
+                    from core.places import Place
+                    from core.algorithm import GeoPoint
                     place_objs = [Place(p["name"], GeoPoint(p["lat"], p["lon"]), p["owner"]) 
                                  for p in optimized]
                     
