@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from core.algorithm import GeoPoint, DistanceCalculator
+from core.algorithm import GeoPoint, DistanceCalculator, TourOptimiszer
 
 
 class TestGeoPoint(unittest.TestCase):
@@ -99,6 +99,95 @@ class TestDistanceCalculator(unittest.TestCase):
         # Distance should be half of Earth's circumference
         expected = math.pi * 6378.197
         self.assertAlmostEqual(distance, expected, delta=1.0)
+
+    def test_total_tour(self):
+        tokyo = GeoPoint(lat=35.682, lon=139.762)
+        sydney = GeoPoint(lat=-33.8688, lon=151.2093)
+        south = GeoPoint(lat=0.0, lon=180.0)
+        list = []
+        list.append(tokyo)
+        list.append(sydney)
+        list.append(south)
+        tour = TourOptimiszer.calculate_tour_distance(list)
+        self.assertAlmostEqual(tour, 18407.597305933155)
+
+
+class TestTourOptimizer(unittest.TestCase):
+    """Tests for the TourOptimizer class (Nearest Neighbor algorithm)."""
+
+    def setUp(self):
+        """Set up test cities."""
+        self.paris = GeoPoint(lat=48.8566, lon=2.3522)
+        self.london = GeoPoint(lat=51.5074, lon=-0.1278)
+        self.berlin = GeoPoint(lat=52.52, lon=13.405)
+        self.rome = GeoPoint(lat=41.9028, lon=12.4964)
+
+    def test_nearest_neighbor_with_single_city(self):
+        """Test nearest_neighbor with only one city."""
+        cities = [self.paris]
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        # Tour should be [paris, paris] (return to start)
+        self.assertEqual(len(tour), 2)
+        self.assertEqual(tour[0], self.paris)
+        self.assertEqual(tour[-1], self.paris)
+
+    def test_nearest_neighbor_with_two_cities(self):
+        """Test nearest_neighbor with two cities."""
+        cities = [self.paris, self.london]
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        # Tour should be [paris, london, paris]
+        self.assertEqual(len(tour), 3)
+        self.assertEqual(tour[0], self.paris)
+        self.assertEqual(tour[1], self.london)
+        self.assertEqual(tour[2], self.paris)
+
+    def test_nearest_neighbor_with_multiple_cities(self):
+        """Test nearest_neighbor with multiple cities."""
+        cities = [self.paris, self.london, self.berlin, self.rome]
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        
+        # Check that tour has all cities plus return to start
+        self.assertEqual(len(tour), len(cities) + 1)
+        
+        # First and last should be same (return to start)
+        self.assertEqual(tour[0], tour[-1])
+        
+        # All cities should be in tour
+        tour_without_return = tour[:-1]
+        self.assertEqual(set(tour_without_return), set(cities))
+
+    def test_nearest_neighbor_returns_geopoints(self):
+        """Test that nearest_neighbor returns GeoPoint objects."""
+        cities = [self.paris, self.london, self.berlin]
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        
+        # All elements should be GeoPoint instances
+        for city in tour:
+            self.assertIsInstance(city, GeoPoint)
+
+    def test_nearest_neighbor_with_custom_start_point(self):
+        """Test nearest_neighbor with a custom starting point."""
+        cities = [self.paris, self.london, self.berlin]
+        tour = TourOptimiszer.nearest_neighbor(cities, start_point=self.london)
+        
+        # Tour should start and end with london
+        self.assertEqual(tour[0], self.london)
+        self.assertEqual(tour[-1], self.london)
+
+    def test_nearest_neighbor_default_start_point(self):
+        """Test that nearest_neighbor defaults to first city."""
+        cities = [self.berlin, self.paris, self.london]
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        
+        # Should start with first city in list
+        self.assertEqual(tour[0], self.berlin)
+        self.assertEqual(tour[-1], self.berlin)
+
+    def test_nearest_neighbor_with_empty_list(self):
+        """Test nearest_neighbor with empty city list."""
+        cities = []
+        tour = TourOptimiszer.nearest_neighbor(cities)
+        self.assertEqual(tour, [])
 
 
 if __name__ == "__main__":
