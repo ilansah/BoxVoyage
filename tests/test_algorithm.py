@@ -190,5 +190,56 @@ class TestTourOptimizer(unittest.TestCase):
         self.assertEqual(tour, [])
 
 
+class TestTwoOpt(unittest.TestCase):
+    """Tests for the 2-opt improvement algorithm."""
+
+    def setUp(self):
+        self.paris  = GeoPoint(lat=48.8566, lon=2.3522)
+        self.london = GeoPoint(lat=51.5074, lon=-0.1278)
+        self.berlin = GeoPoint(lat=52.52,   lon=13.405)
+        self.rome   = GeoPoint(lat=41.9028, lon=12.4964)
+
+    def test_two_opt_does_not_lose_cities(self):
+        """2-opt must return all input cities."""
+        cities = [self.paris, self.london, self.berlin, self.rome]
+        result = TourOptimiszer.two_opt(cities)
+        self.assertEqual(set(result), set(cities))
+        self.assertEqual(len(result), len(cities))
+
+    def test_two_opt_improves_or_equals_input(self):
+        """2-opt must never make the tour longer."""
+        cities = [self.paris, self.berlin, self.london, self.rome]
+        distance_before = TourOptimiszer.calculate_tour_distance(cities)
+        optimized = TourOptimiszer.two_opt(cities)
+        distance_after = TourOptimiszer.calculate_tour_distance(optimized)
+        self.assertLessEqual(distance_after, distance_before)
+
+    def test_two_opt_already_optimal_unchanged(self):
+        """2-opt on an already-optimal 2-city tour must return the same tour."""
+        cities = [self.paris, self.london]
+        result = TourOptimiszer.two_opt(cities)
+        self.assertEqual(set(result), set(cities))
+
+    def test_two_opt_single_city(self):
+        """2-opt on a single city must return that city."""
+        result = TourOptimiszer.two_opt([self.paris])
+        self.assertEqual(result, [self.paris])
+
+    def test_optimize_places_uses_two_opt(self):
+        """optimize_places_with_distances result must be <= nearest neighbor alone."""
+        places = [
+            {"name": "Paris",  "lat": 48.8566, "lon": 2.3522,   "owner": "alice"},
+            {"name": "Berlin", "lat": 52.52,   "lon": 13.405,   "owner": "alice"},
+            {"name": "London", "lat": 51.5074, "lon": -0.1278,  "owner": "alice"},
+            {"name": "Rome",   "lat": 41.9028, "lon": 12.4964,  "owner": "alice"},
+        ]
+        geopoints = [GeoPoint(p["lat"], p["lon"]) for p in places]
+        nn_distance = TourOptimiszer.calculate_tour_distance(
+            TourOptimiszer.nearest_neighbor(geopoints)[:-1]
+        )
+        result = TourOptimiszer.optimize_places_with_distances(places)
+        self.assertLessEqual(result['total_distance'], nn_distance * 1.01)  # tolerance 1%
+
+
 if __name__ == "__main__":
     unittest.main()
