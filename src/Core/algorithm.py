@@ -234,10 +234,7 @@ class TourOptimiszer:
                     'distance': 0.0
                 })
             else:
-<<<<<<< HEAD
                 # Calculate distance between previous city and current city
-=======
->>>>>>> main
                 prev_gp = GeoPoint(optimized_places[i - 1]["lat"], optimized_places[i - 1]["lon"])
                 curr_gp = GeoPoint(optimized_places[i]["lat"], optimized_places[i]["lon"])
                 dist = DistanceCalculator.distance(prev_gp, curr_gp)
@@ -248,11 +245,7 @@ class TourOptimiszer:
                     'distance': dist
                 })
 
-<<<<<<< HEAD
-        # STEP 7: Distance for return trip (last city -> first city)
-=======
         # Return leg (last city back to first)
->>>>>>> main
         last_gp = GeoPoint(optimized_places[-1]["lat"], optimized_places[-1]["lon"])
         first_gp = GeoPoint(optimized_places[0]["lat"], optimized_places[0]["lon"])
         dist_return = DistanceCalculator.distance(last_gp, first_gp)
