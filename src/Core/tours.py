@@ -8,7 +8,7 @@ Handles:
 
 import uuid
 
-from core.places import Place
+from src.core.places import Place
 
 
 class Tour:
@@ -146,6 +146,56 @@ class TourManager:
         for t in raw_tours:
             if t["id"] == tour_id:
                 t["is_public"] = is_public
+                self._save_owner_tours(raw_tours)
+                return True
+
+        return False
+    
+    def add_place_to_tour(self, tour_id: str, place) -> bool:
+        """
+        Adds a place to an existing tour.
+
+        Args:
+            tour_id (str): The id of the tour to update.
+            place: A Place object to add.
+
+        Returns:
+            bool: True if the place was added, False if tour not found.
+        """
+        raw_tours = self._load_owner_tours()
+
+        for t in raw_tours:
+            if t["id"] == tour_id:
+                t["places"].append(place.to_dict())
+                self._save_owner_tours(raw_tours)
+                return True
+
+        return False
+    
+    def update_tour_places(self, tour_id: str, places: list) -> bool:
+        """
+        Updates the places list of a tour.
+
+        Args:
+            tour_id (str): The id of the tour to update.
+            places (list): New list of places (as dicts or Place objects).
+
+        Returns:
+            bool: True if the tour was found and updated, False otherwise.
+        """
+        raw_tours = self._load_owner_tours()
+
+        for t in raw_tours:
+            if t["id"] == tour_id:
+                # Convert Place objects to dicts if needed
+                places_as_dicts = []
+                for p in places:
+                    if isinstance(p, dict):
+                        places_as_dicts.append(p)
+                    else:
+                        places_as_dicts.append(p.to_dict())
+                
+                t["places"] = places_as_dicts
                 self._save_owner_tours(raw_tours)
                 return True
 
