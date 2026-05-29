@@ -18,18 +18,12 @@
       "id": "60e5bf60",
       "name": "test2",
       "owner": "vic",
-      "is_public": false,
+      "is_public": true,
       "places": [
         {
-          "name": "tours",
-          "lat": 47.3900474,
-          "lon": 0.6889268,
-          "owner": "vic"
-        },
-        {
-          "name": "Paris",
-          "lat": 48.8534951,
-          "lon": 2.3483915,
+          "name": "lens",
+          "lat": 50.4291723,
+          "lon": 2.8319805,
           "owner": "vic"
         },
         {
@@ -45,15 +39,21 @@
           "owner": "vic"
         },
         {
-          "name": "nimes",
-          "lat": 43.8374249,
-          "lon": 4.3600687,
-          "owner": "vic"
-        },
-        {
           "name": "bordeaux",
           "lat": 44.841225,
           "lon": -0.5800364,
+          "owner": "vic"
+        },
+        {
+          "name": "tours",
+          "lat": 47.3900474,
+          "lon": 0.6889268,
+          "owner": "vic"
+        },
+        {
+          "name": "Paris",
+          "lat": 48.8534951,
+          "lon": 2.3483915,
           "owner": "vic"
         }
       ]
