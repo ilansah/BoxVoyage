@@ -166,6 +166,13 @@ class TourManager:
 
         for t in raw_tours:
             if t["id"] == tour_id:
+                # Vérifier si la ville est déjà présente (insensible à la casse)
+                already_exists = any(
+                    p["name"].lower() == place.name.lower()
+                    for p in t["places"]
+                )
+                if already_exists:
+                    return False
                 t["places"].append(place.to_dict())
                 self._save_owner_tours(raw_tours)
                 return True
@@ -200,3 +207,23 @@ class TourManager:
                 return True
 
         return False
+    
+    def delete_tour(self, tour_id: str) -> bool:
+        """
+        Deletes a tour by id.
+
+        Args:
+            tour_id (str): The id of the tour to delete.
+
+        Returns:
+            bool: True if the tour was found and deleted, False otherwise.
+        """
+        raw_tours = self._load_owner_tours()
+        updated = [t for t in raw_tours if t["id"] != tour_id]
+        
+        # Si rien n'a été supprimé, return False
+        if len(updated) == len(raw_tours):
+            return False
+        
+        self._save_owner_tours(updated)
+        return True
