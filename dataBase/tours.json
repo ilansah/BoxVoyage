@@ -67,21 +67,27 @@
       "is_public": true,
       "places": [
         {
-          "name": "Manchester",
-          "lat": 53.4424618,
-          "lon": -2.2324547,
-          "owner": "Chahine"
-        },
-        {
           "name": "Liverpool",
           "lat": 53.3933411,
           "lon": -2.9166389,
           "owner": "Chahine"
         },
         {
-          "name": "Bristol",
-          "lat": 51.4538022,
-          "lon": -2.5972985,
+          "name": "Birmingham",
+          "lat": 52.4948994,
+          "lon": -1.8518439,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Bath",
+          "lat": 51.3813864,
+          "lon": -2.3596963,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Oxford",
+          "lat": 51.7520131,
+          "lon": -1.2578499,
           "owner": "Chahine"
         },
         {
@@ -95,21 +101,59 @@
           "lat": 50.8214626,
           "lon": -0.1400561,
           "owner": "Chahine"
-        }
-      ]
-    },
-    {
-      "id": "fde80145",
-      "name": "France",
-      "owner": "Chahine",
-      "is_public": false,
-      "places": [
+        },
+        {
+          "name": "hem",
+          "lat": 50.6540895,
+          "lon": 3.1839429,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Cambridge",
+          "lat": 52.1975846,
+          "lon": 0.1391537,
+          "owner": "Chahine"
+        },
+        {
+          "name": "York",
+          "lat": 53.9656579,
+          "lon": -1.0743052,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Manchester",
+          "lat": 53.4424618,
+          "lon": -2.2324547,
+          "owner": "Chahine"
+        },
+        {
+          "name": "Bristol",
+          "lat": 51.4538022,
+          "lon": -2.5972985,
+          "owner": "Chahine"
+        },
         {
           "name": "Lille",
           "lat": 50.6365654,
           "lon": 3.0635282,
           "owner": "Chahine"
+        },
+        {
+          "name": "roubaix",
+          "lat": 50.6915893,
+          "lon": 3.1741734,
+          "owner": "Chahine"
+        },
+        {
+          "name": "tourcoing",
+          "lat": 50.7235038,
+          "lon": 3.1605714,
+          "owner": "Chahine"
         }
+      ],
+      "hotels": [
+        "Bath",
+        "hem"
       ]
     }
   ],

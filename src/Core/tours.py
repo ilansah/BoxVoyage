@@ -23,12 +23,13 @@ class Tour:
         is_public (bool): Whether the tour is visible to other users.
     """
 
-    def __init__(self, name: str, owner: str, places: list, is_public: bool = False):
+    def __init__(self, name: str, owner: str, places: list, is_public: bool = False, hotels: list = None):
         self.id = uuid.uuid4().hex[:8]  # short unique id, e.g. "a1b2c3d4"
         self.name = name
         self.owner = owner
         self.places = places
         self.is_public = is_public
+        self.hotels = hotels if hotels is not None else []  # list of city names designated as hotels
 
     def to_dict(self) -> dict:
         """Serializes the Tour to a JSON-compatible dictionary."""
@@ -38,6 +39,7 @@ class Tour:
         result["owner"] = self.owner
         result["is_public"] = self.is_public
         result["places"] = self.places
+        result["hotels"] = self.hotels
         return result
 
     @classmethod
@@ -50,6 +52,7 @@ class Tour:
         tour.owner = data["owner"]
         tour.is_public = data["is_public"]
         tour.places = data["places"]
+        tour.hotels = data.get("hotels", [])  # backward compatible with existing data
         return tour
 
     def __repr__(self) -> str:
@@ -227,6 +230,25 @@ class TourManager:
         
         self._save_owner_tours(updated)
         return True
+
+    def update_tour_hotels(self, tour_id: str, hotels: list) -> bool:
+        """
+        Updates the hotel list of a tour.
+
+        Args:
+            tour_id (str): The id of the tour to update.
+            hotels (list[str]): List of city names designated as hotels.
+
+        Returns:
+            bool: True if the tour was found and updated, False otherwise.
+        """
+        raw_tours = self._load_owner_tours()
+        for t in raw_tours:
+            if t["id"] == tour_id:
+                t["hotels"] = hotels
+                self._save_owner_tours(raw_tours)
+                return True
+        return False
 
     def list_public_tours(self) -> list[Tour]:
         """Returns all public tours from all users."""
