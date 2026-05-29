@@ -8,7 +8,7 @@ Handles:
 
 import uuid
 
-from src.core.places import Place
+from core.places import Place
 
 
 class Tour:
