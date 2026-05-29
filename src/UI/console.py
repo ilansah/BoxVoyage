@@ -299,7 +299,14 @@ def main():
                                         GeoPoint(c['lat'], c['lon'])
                                     )
                                     print(f"      ↳ {c['name']} (aller-retour: {dist*2:.1f} km)")
-                        print(f"\nDistance totale: {result['total_distance']:.1f} km")
+                        
+                        # CALCUL DISTANCE TOTALE avec aller-retour excursions
+                        total_distance = TourOptimiszer.calculate_total_distance_with_excursions(
+                            result['total_distance'],
+                            result['optimized_places'],
+                            excursions
+                        )
+                        print(f"\nDistance totale: {total_distance:.1f} km")
 
                     else:
                         # No hotels: standard optimization on all cities

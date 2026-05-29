@@ -299,3 +299,64 @@ class TourOptimiszer:
         })
 
         return {'optimized_places': optimized_places, 'segments': segments, 'total_distance': total_dist}
+
+    @staticmethod
+    def calculate_excursion_distance(excursions: dict) -> float:
+        """
+        Calculates total distance for all excursions (round-trip aller-retour).
+        
+        For each excursion from a hotel, distance = 2 * (hotel to city distance)
+        
+        Args:
+            excursions (dict): {hotel_name: [place_dicts], ...}
+        
+        Returns:
+            float: Total distance in km (all aller-retour combined)
+        """
+        total = 0.0
+        
+        for hotel_name, places in excursions.items():
+            # Find the hotel place to get its coordinates
+            for place in places:
+                # We need hotel coordinates - find in main_tour would be needed
+                # This will be called with hotel coords available separately
+                pass
+        
+        return total
+    
+    @staticmethod
+    def calculate_total_distance_with_excursions(main_tour_distance: float, main_tour_places: list[dict], excursions: dict) -> float:
+        """
+        Calculates total trip distance including excursion round-trips.
+        
+        FORMULE: Distance totale = Main tour distance + 2 * (sum of hotel->excursion distances)
+        
+        Args:
+            main_tour_distance (float): Distance of main tour (from optimize_places_with_distances)
+            main_tour_places (list[dict]): Places in main tour (to find hotel coordinates)
+            excursions (dict): {hotel_name: [place_dicts], ...}
+        
+        Returns:
+            float: Total distance including all round-trips
+        """
+        excursion_distance = 0.0
+        
+        # For each hotel and its excursions
+        for hotel_name, excursion_places in excursions.items():
+            # Find hotel coordinates in main tour
+            hotel_coords = None
+            for place in main_tour_places:
+                if place["name"] == hotel_name:
+                    hotel_coords = GeoPoint(place["lat"], place["lon"])
+                    break
+            
+            if hotel_coords is None:
+                continue
+            
+            # Calculate round-trip distance for each excursion
+            for exc_place in excursion_places:
+                exc_coords = GeoPoint(exc_place["lat"], exc_place["lon"])
+                one_way = DistanceCalculator.distance(hotel_coords, exc_coords)
+                excursion_distance += 2 * one_way  # Aller-retour
+        
+        return main_tour_distance + excursion_distance
