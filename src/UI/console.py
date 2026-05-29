@@ -30,8 +30,9 @@ def display_menu_in_tour(tour):
     print("2. Voir les villes du voyage")
     print("3. Supprimer une ville")
     print("4. Lancer l'algorithme optimal")
-    print("5. Changer la visibilité")
-    print("6. Retour aux voyages")
+    print("5. Changer la ville de départ")
+    print("6. Changer la visibilité")
+    print("7. Retour aux voyages")
 
 
 def display_public_tours(public_tours):
@@ -236,8 +237,11 @@ def main():
                 if len(selected_tour.places) < 2:
                     print("✗ Il faut au moins 2 villes pour optimiser")
                 else:
+                    start_city = None
+                    if hasattr(selected_tour, '_start_city') and selected_tour._start_city:
+                        start_city = selected_tour._start_city
                     print(f"\n⏳ Optimisation du voyage...")
-                    result = TourOptimiszer.optimize_places_with_distances(selected_tour.places)
+                    result = TourOptimiszer.optimize_places_with_distances(selected_tour.places, start_city_name=start_city)
                     selected_tour.places = result['optimized_places']
                     tour_manager.update_tour_places(selected_tour.id, result['optimized_places'])
                     print(f"\n✓ Voyage optimisé:")
@@ -252,6 +256,23 @@ def main():
                     print(f"\nDistance totale: {result['total_distance']:.1f} km")
 
             elif choice == "5":
+                # Changer la ville de départ
+                if not selected_tour.places:
+                    print("✗ Le voyage est vide")
+                else:
+                    print(f"\nVilles disponibles:")
+                    for i, place in enumerate(selected_tour.places, 1):
+                        print(f"  {i}. {place['name']}")
+                    idx_str = input("Numéro de la ville de départ: ")
+                    if idx_str.isdigit():
+                        idx = int(idx_str) - 1
+                        if 0 <= idx < len(selected_tour.places):
+                            selected_tour._start_city = selected_tour.places[idx]['name']
+                            print(f"✓ Ville de départ: {selected_tour.places[idx]['name']}")
+                        else:
+                            print("✗ Numéro invalide")
+
+            elif choice == "6":
                 # Toggle visibility
                 new_visibility = not selected_tour.is_public
                 tour_manager.set_visibility(selected_tour.id, new_visibility)
@@ -259,7 +280,7 @@ def main():
                 status = "public" if new_visibility else "privé"
                 print(f"✓ Voyage maintenant {status}")
 
-            elif choice == "6":
+            elif choice == "7":
                 # Retour aux voyages
                 selected_tour = None
 
