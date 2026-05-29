@@ -18,29 +18,20 @@ class TestHotel(unittest.TestCase):
 
     def setUp(self):
         """Create reusable test data."""
-        self.point_paris = GeoPoint(lat=48.8566, lon=2.3522)
-        self.hotel = Hotel(
-            name="Paris",
-            point=self.point_paris,
-            owner="user1"
-        )
+        self.place_paris = Place(name="Paris", point=GeoPoint(lat=48.8566, lon=2.3522), owner="user1")
+        self.hotel = Hotel(place=self.place_paris)
 
     def test_hotel_creation(self):
-        """Hotel must store name, point, owner and distance limit correctly."""
-        self.assertEqual(self.hotel.name, "Paris")
-        self.assertEqual(self.hotel.point.lat, 48.8566)
-        self.assertEqual(self.hotel.point.lon, 2.3522)
-        self.assertEqual(self.hotel.owner, "user1")
+        """Hotel must store place and distance limit correctly."""
+        self.assertEqual(self.hotel.place.name, "Paris")
+        self.assertEqual(self.hotel.place.point.lat, 48.8566)
+        self.assertEqual(self.hotel.place.point.lon, 2.3522)
         self.assertEqual(self.hotel.nearby_distance_limit, 60.0)
 
     def test_hotel_custom_distance_limit(self):
         """Hotel must accept custom distance limit."""
-        hotel = Hotel(
-            name="Lyon",
-            point=GeoPoint(lat=45.7640, lon=4.8357),
-            owner="user1",
-            distance_limit=30.0
-        )
+        place_lyon = Place(name="Lyon", point=GeoPoint(lat=45.7640, lon=4.8357), owner="user1")
+        hotel = Hotel(place=place_lyon, distance_limit=30.0)
         self.assertEqual(hotel.nearby_distance_limit, 30.0)
 
     def test_set_nearby_cities(self):
@@ -95,13 +86,12 @@ class TestHotel(unittest.TestCase):
             self.assertLessEqual(info[i]["distance_km"], info[i + 1]["distance_km"])
 
     def test_to_dict(self):
-        """to_dict must return dict with name, lat, lon, owner, distance_limit."""
+        """to_dict must return dict with place and distance_limit."""
         data = self.hotel.to_dict()
 
-        self.assertEqual(data["name"], "Paris")
-        self.assertEqual(data["lat"], 48.8566)
-        self.assertEqual(data["lon"], 2.3522)
-        self.assertEqual(data["owner"], "user1")
+        self.assertIn("place", data)
+        self.assertIn("distance_limit", data)
+        self.assertEqual(data["place"]["name"], "Paris")
         self.assertEqual(data["distance_limit"], 60.0)
 
     def test_from_dict(self):
@@ -109,14 +99,14 @@ class TestHotel(unittest.TestCase):
         data = self.hotel.to_dict()
         hotel2 = Hotel.from_dict(data)
 
-        self.assertEqual(hotel2.name, self.hotel.name)
-        self.assertEqual(hotel2.owner, self.hotel.owner)
-        self.assertEqual(hotel2.point.lat, self.hotel.point.lat)
-        self.assertEqual(hotel2.point.lon, self.hotel.point.lon)
+        self.assertEqual(hotel2.place.name, self.hotel.place.name)
+        self.assertEqual(hotel2.place.owner, self.hotel.place.owner)
+        self.assertEqual(hotel2.place.point.lat, self.hotel.place.point.lat)
+        self.assertEqual(hotel2.place.point.lon, self.hotel.place.point.lon)
         self.assertEqual(hotel2.nearby_distance_limit, self.hotel.nearby_distance_limit)
 
     def test_repr(self):
-        """repr must contain hotel name, coordinates and nearby city count."""
+        """repr must contain hotel place name and nearby city count."""
         repr_str = repr(self.hotel)
 
         self.assertIn("Paris", repr_str)
