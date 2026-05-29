@@ -29,7 +29,7 @@ class GeoPoint:
         return f"GeoPoint(lat={self.lat}, lon={self.lon})"
 
 
-class DistanceCalculator:
+class DistanceCalculator:   
     """
     Calculates distances between geographic points using the great-circle distance formula.
 
@@ -177,8 +177,9 @@ class TourOptimiszer:
                         improved = True
 
         return best
-
+    
     @staticmethod
+<<<<<<< HEAD
     def _get_place_for_geopoint(geopoint: GeoPoint, places_list: list[dict]) -> dict:
         """Helper: Find a place dict matching a GeoPoint's coordinates."""
         for place in places_list:
@@ -188,6 +189,9 @@ class TourOptimiszer:
 
     @staticmethod
     def optimize_places_with_distances(places_list: list[dict]) -> dict:
+=======
+    def optimize_places_with_distances(places_list: list[dict], start_city_name: str = None) -> dict:
+>>>>>>> main
         """
         Optimizes tour order (Nearest Neighbor + 2-opt) and calculates segment distances.
 
@@ -196,18 +200,29 @@ class TourOptimiszer:
 
         Returns:
             dict: {
-                'optimized_places': list of places in optimal order,
-                'segments': list of dicts with distance between consecutive stops,
-                'total_distance': total distance including return to start
+                'optimized_places': cities in optimal order,
+                'segments': distances between each pair of consecutive cities,
+                'total_distance': total distance (round trip)
             }
         """
         if len(places_list) < 2:
+<<<<<<< HEAD
             return {'optimized_places': places_list, 'segments': [], 'total_distance': 0.0}
 
         # Step 1: Optimize GeoPoints (nearest neighbor + 2-opt)
+=======
+            return {
+                'optimized_places': places_list,
+                'segments': [],
+                'total_distance': 0.0
+            }
+        
+        # Convert to GeoPoints
+>>>>>>> main
         geopoints = [GeoPoint(p["lat"], p["lon"]) for p in places_list]
         optimized_geopoints = TourOptimiszer.two_opt(TourOptimiszer.nearest_neighbor(geopoints)[:-1])
 
+<<<<<<< HEAD
         # Step 2: Map back to place dicts
         optimized_places = [TourOptimiszer._get_place_for_geopoint(gp, places_list) for gp in optimized_geopoints]
 
@@ -225,6 +240,48 @@ class TourOptimiszer:
                 'to': optimized_places[i]['name'],
                 'distance': dist
             })
+=======
+        # Step 1: nearest neighbor for initial tour (excludes return point at end)
+        nn_tour = TourOptimiszer.nearest_neighbor(geopoints)
+        nn_tour_no_return = nn_tour[:-1]
+
+        # Step 2: 2-opt improvement
+        optimized_geopoints_raw = TourOptimiszer.two_opt(nn_tour_no_return)
+        optimized_geopoints = optimized_geopoints_raw + [optimized_geopoints_raw[0]]
+        
+        # STEP 5: Find complete places (dicts) in new order
+        # We only have coordinates, so match with original places
+        optimized_places = []
+        for opt_gp in optimized_geopoints[:-1]:
+            for place in places_list:
+                if place["lat"] == opt_gp.lat and place["lon"] == opt_gp.lon and place not in optimized_places:
+                    optimized_places.append(place)
+                    break
+
+        # Calculate distances between each segment
+        segments = []
+        total_dist = 0.0
+
+        for i in range(len(optimized_places)):
+            if i == 0:
+                # First city: no previous distance
+                segments.append({
+                    'from': None,
+                    'to': optimized_places[0]['name'],
+                    'distance': 0.0
+                })
+            else:
+                # Calculate distance between previous city and current city
+                prev_gp = GeoPoint(optimized_places[i - 1]["lat"], optimized_places[i - 1]["lon"])
+                curr_gp = GeoPoint(optimized_places[i]["lat"], optimized_places[i]["lon"])
+                dist = DistanceCalculator.distance(prev_gp, curr_gp)
+                total_dist += dist
+                segments.append({
+                    'from': optimized_places[i - 1]['name'],
+                    'to': optimized_places[i]['name'],
+                    'distance': dist
+                })
+>>>>>>> main
 
         # Return leg
         gp_last = GeoPoint(optimized_places[-1]["lat"], optimized_places[-1]["lon"])
