@@ -2,14 +2,18 @@
 places.py — Place management and geographic geocoding.
 
 Handles:
+- GeoPoint: geographic coordinate representation
 - GeocodingService: converts a place name to coordinates via Nominatim API
 - Place: data object representing a user's place of interest
 - PlaceManager: CRUD operations on a user's place list
 """
 
+import json
+import math
+import os
+import requests
 from core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
-from data.storage import JsonStorage
 
 
 class Place:
@@ -29,12 +33,12 @@ class Place:
 
     def to_dict(self) -> dict:
         """Serializes the Place to a JSON-compatible dictionary."""
-        result = {}
-        result["name"] = self.name
-        result["lat"] = self.point.lat
-        result["lon"] = self.point.lon
-        result["owner"] = self.owner
-        return result
+        return {
+            "name": self.name,
+            "lat": self.point.lat,
+            "lon": self.point.lon,
+            "owner": self.owner,
+        }
 
     @classmethod
     def from_dict(cls, data: dict) -> "Place":
@@ -44,6 +48,9 @@ class Place:
 
     def __repr__(self) -> str:
         return f"Place(name={self.name!r}, lat={self.point.lat}, lon={self.point.lon})"
+
+
+
 
 
 class GeocodingService:
@@ -70,12 +77,12 @@ class GeocodingService:
             return None
         return GeoPoint(lat=location.latitude, lon=location.longitude)
 
-
+  
 class PlaceManager:
     """
     Manages CRUD operations on a user's list of places.
 
-    Places are stored in a JSON file.
+    Places are stored in JSON file
 
     Args:
         storage (JsonStorage): Storage instance pointing to places.json.
@@ -89,9 +96,7 @@ class PlaceManager:
     def _load_owner_places(self) -> list[dict]:
         """Returns the raw place dicts for the current user."""
         data = self.storage.load()
-        if self.owner not in data:
-            return []
-        return data[self.owner]
+        return data.get(self.owner, [])
 
     def _save_owner_places(self, places: list[dict]) -> None:
         """Overwrites the current user's place list in storage."""
@@ -106,11 +111,10 @@ class PlaceManager:
         """
         existing = self._load_owner_places()
 
-        # Check for duplicates (case-insensitive)
-        for p in existing:
-            if p["name"].lower() == name.lower():
-                print(f"[INFO] '{name}' is already in your list.")
-                return None
+        # Prevent duplicates (case-insensitive)
+        if any(p["name"].lower() == name.lower() for p in existing):
+            print(f"[INFO] '{name}' is already in your list.")
+            return None
 
         service = GeocodingService()
         point = service.get_coordinates(name)

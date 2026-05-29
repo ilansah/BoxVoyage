@@ -1,6 +1,6 @@
-from src.core.auth import AuthManager
-from src.core.places import PlaceManager
-from src.data.storage import JsonStorage
+from core.auth import AuthManager
+from core.places import PlaceManager
+from data.storage import JsonStorage
 
 def main():
     storage_users = JsonStorage("dataBase/users.json")

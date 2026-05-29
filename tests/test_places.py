@@ -15,9 +15,7 @@ from core.places import Place, PlaceManager, GeocodingService
 from core.algorithm import GeoPoint
 
 
-# ---------------------------------------------------------------------------
 # Place tests
-# ---------------------------------------------------------------------------
 
 class TestPlace(unittest.TestCase):
 
@@ -64,9 +62,7 @@ class TestPlace(unittest.TestCase):
         self.assertIn("2.3522", r)
 
 
-# ---------------------------------------------------------------------------
 # PlaceManager tests (with mocked storage — no file system required)
-# ---------------------------------------------------------------------------
 
 class TestPlaceManager(unittest.TestCase):
 
