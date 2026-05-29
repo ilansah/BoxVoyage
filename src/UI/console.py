@@ -1,7 +1,8 @@
 from src.core.auth import AuthManager
-from src.core.places import PlaceManager
+from src.core.places import PlaceManager, Place
 from src.core.tours import TourManager
 from src.core.algorithm import DistanceCalculator, GeoPoint, TourOptimiszer
+from src.core.hotel import Hotel
 from src.data.storage import JsonStorage
 
 
@@ -35,7 +36,8 @@ def display_menu_in_tour(tour):
     print("4. Lancer l'algorithme optimal")
     print("5. Changer la ville de départ")
     print("6. Changer la visibilité")
-    print("7. Retour aux voyages")
+    print("7. Gérer les hôtels et excursions")
+    print("8. Retour aux voyages")
 
 
 def display_public_tours(public_tours):
@@ -244,19 +246,76 @@ def main():
                     if hasattr(selected_tour, '_start_city') and selected_tour._start_city:
                         start_city = selected_tour._start_city
                     print(f"\n⏳ Optimisation du voyage...")
-                    result = TourOptimiszer.optimize_places_with_distances(selected_tour.places, start_city_name=start_city)
-                    selected_tour.places = result['optimized_places']
-                    tour_manager.update_tour_places(selected_tour.id, result['optimized_places'])
-                    print(f"\n✓ Voyage optimisé:")
-                    for i, segment in enumerate(result['segments']):
-                        if i == 0:
-                            print(f"  {i+1}. {segment['to']}")
-                        else:
-                            if segment.get('is_return'):
-                                print(f"  → Retour à {segment['to']} (+{segment['distance']:.1f} km)")
+
+                    if selected_tour.hotels:
+                        # Ask user for excursion radius
+                        limit_str = input("Rayon d'excursion en km (défaut: 60): ").strip()
+                        try:
+                            excursion_limit = float(limit_str) if limit_str else 60.0
+                        except ValueError:
+                            excursion_limit = 60.0
+
+                        # Split: hotels stay in main tour, nearby cities become excursions
+                        split = TourOptimiszer.split_by_hotels(selected_tour.places, selected_tour.hotels, excursion_limit)
+                        main_places = split['main_tour']
+                        excursions = split['excursions']
+
+                        # Optimize only the main tour (with optional start city)
+                        result = TourOptimiszer.optimize_places_with_distances(main_places, start_city_name=start_city)
+
+                        # Keep ALL places: optimized main tour first, then excursion cities after
+                        excursion_cities = [c for cities in excursions.values() for c in cities]
+                        all_places_ordered = result['optimized_places'] + excursion_cities
+                        selected_tour.places = all_places_ordered
+                        tour_manager.update_tour_places(selected_tour.id, all_places_ordered)
+
+                        print(f"\n✓ Tour principal optimisé:")
+                        stop_num = 1
+                        for i, segment in enumerate(result['segments']):
+                            city_name = segment['to']
+                            if i == 0:
+                                print(f"  {stop_num}. {city_name}")
+                            elif segment.get('is_return'):
+                                # Print excursions from last city before return, if any
+                                last_city = result['optimized_places'][-1]['name']
+                                for c in excursions.get(last_city, []):
+                                    dist = DistanceCalculator.distance(
+                                        GeoPoint(result['optimized_places'][-1]['lat'], result['optimized_places'][-1]['lon']),
+                                        GeoPoint(c['lat'], c['lon'])
+                                    )
+                                    print(f"      ↳ {c['name']} (aller-retour: {dist*2:.1f} km)")
+                                print(f"  → Retour à {city_name} (+{segment['distance']:.1f} km)")
+                                continue
                             else:
-                                print(f"  {i+1}. {segment['to']} (+{segment['distance']:.1f} km)")
-                    print(f"\nDistance totale: {result['total_distance']:.1f} km")
+                                stop_num += 1
+                                print(f"  {stop_num}. {city_name} (+{segment['distance']:.1f} km)")
+
+                            # Print excursions from this city, if any
+                            for c in excursions.get(city_name, []):
+                                hotel_place = next((p for p in result['optimized_places'] if p['name'] == city_name), None)
+                                if hotel_place:
+                                    dist = DistanceCalculator.distance(
+                                        GeoPoint(hotel_place['lat'], hotel_place['lon']),
+                                        GeoPoint(c['lat'], c['lon'])
+                                    )
+                                    print(f"      ↳ {c['name']} (aller-retour: {dist*2:.1f} km)")
+                        print(f"\nDistance totale: {result['total_distance']:.1f} km")
+
+                    else:
+                        # No hotels: standard optimization on all cities
+                        result = TourOptimiszer.optimize_places_with_distances(selected_tour.places, start_city_name=start_city)
+                        selected_tour.places = result['optimized_places']
+                        tour_manager.update_tour_places(selected_tour.id, result['optimized_places'])
+                        print(f"\n✓ Voyage optimisé:")
+                        for i, segment in enumerate(result['segments']):
+                            if i == 0:
+                                print(f"  {i+1}. {segment['to']}")
+                            else:
+                                if segment.get('is_return'):
+                                    print(f"  → Retour à {segment['to']} (+{segment['distance']:.1f} km)")
+                                else:
+                                    print(f"  {i+1}. {segment['to']} (+{segment['distance']:.1f} km)")
+                        print(f"\nDistance totale: {result['total_distance']:.1f} km")
 
             elif choice == "5":
                 # Changer la ville de départ
@@ -284,6 +343,70 @@ def main():
                 print(f"✓ Voyage maintenant {status}")
 
             elif choice == "7":
+                # Multi-hotel management
+                if len(selected_tour.places) < 2:
+                    print("✗ Il faut au moins 2 villes")
+                else:
+                    print(f"\n=== Hôtels actuels: {selected_tour.hotels or 'aucun'} ===")
+                    print("Villes du voyage:")
+                    for i, p in enumerate(selected_tour.places, 1):
+                        tag = " [HÔTEL]" if p['name'] in selected_tour.hotels else ""
+                        print(f"  {i}. {p['name']}{tag}")
+                    print("\nA. Ajouter un hôtel  |  R. Retirer un hôtel  |  V. Voir les excursions  |  Q. Annuler")
+                    sub = input("Action: ").strip().lower()
+
+                    if sub == "a":
+                        idx_str = input("Numéro de la ville à définir comme hôtel: ")
+                        if idx_str.isdigit():
+                            idx = int(idx_str) - 1
+                            if 0 <= idx < len(selected_tour.places):
+                                name = selected_tour.places[idx]['name']
+                                if name not in selected_tour.hotels:
+                                    selected_tour.hotels.append(name)
+                                    tour_manager.update_tour_hotels(selected_tour.id, selected_tour.hotels)
+                                    print(f"✓ {name} défini comme hôtel")
+                                else:
+                                    print(f"✗ {name} est déjà un hôtel")
+
+                    elif sub == "r":
+                        if not selected_tour.hotels:
+                            print("✗ Aucun hôtel défini")
+                        else:
+                            for i, h in enumerate(selected_tour.hotels, 1):
+                                print(f"  {i}. {h}")
+                            idx_str = input("Numéro de l'hôtel à retirer: ")
+                            if idx_str.isdigit():
+                                idx = int(idx_str) - 1
+                                if 0 <= idx < len(selected_tour.hotels):
+                                    removed = selected_tour.hotels.pop(idx)
+                                    tour_manager.update_tour_hotels(selected_tour.id, selected_tour.hotels)
+                                    print(f"✓ {removed} retiré des hôtels")
+
+                    elif sub == "v":
+                        if not selected_tour.hotels:
+                            print("✗ Aucun hôtel défini — ajoutez-en d'abord")
+                        else:
+                            result = TourOptimiszer.split_by_hotels(selected_tour.places, selected_tour.hotels)
+                            main = result['main_tour']
+                            excursions = result['excursions']
+
+                            print(f"\n=== Tour principal ({len(main)} villes) ===")
+                            for p in main:
+                                tag = " [HÔTEL]" if p['name'] in selected_tour.hotels else ""
+                                print(f"  - {p['name']}{tag}")
+
+                            for hotel_name, cities in excursions.items():
+                                if cities:
+                                    print(f"\n=== Excursions depuis {hotel_name} ===")
+                                    for c in cities:
+                                        dist = DistanceCalculator.distance(
+                                            GeoPoint(next(p['lat'] for p in selected_tour.places if p['name'] == hotel_name),
+                                                     next(p['lon'] for p in selected_tour.places if p['name'] == hotel_name)),
+                                            GeoPoint(c['lat'], c['lon'])
+                                        )
+                                        print(f"  - {c['name']} ({dist:.1f} km aller-retour: {dist*2:.1f} km)")
+
+            elif choice == "8":
                 # Retour aux voyages
                 selected_tour = None
 

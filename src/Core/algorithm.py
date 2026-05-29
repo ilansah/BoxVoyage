@@ -187,6 +187,55 @@ class TourOptimiszer:
         return None
 
     @staticmethod
+    def split_by_hotels(places_list: list[dict], hotel_names: list[str], limit: float = 60.0) -> dict:
+        """
+        Splits a list of places into a main tour and hotel excursions.
+
+        Each non-hotel city is assigned to the nearest hotel within `limit` km.
+        Cities beyond the limit from all hotels stay in the main tour.
+        Hotels themselves are always part of the main tour.
+
+        Args:
+            places_list (list[dict]): All places with 'lat', 'lon', 'name'.
+            hotel_names (list[str]): Names of cities designated as hotels.
+            limit (float): Maximum distance in km to assign a city as an excursion (default: 60km).
+
+        Returns:
+            dict: {
+                'main_tour': list of place dicts for the main optimized tour,
+                'excursions': { hotel_name: [place dicts] }
+            }
+        """
+        LIMIT = limit
+        hotel_places = [p for p in places_list if p["name"] in hotel_names]
+        non_hotels = [p for p in places_list if p["name"] not in hotel_names]
+
+        excursions = {h["name"]: [] for h in hotel_places}
+        main_tour = list(hotel_places)  # hotels are always in the main tour
+
+        for place in non_hotels:
+            place_gp = GeoPoint(place["lat"], place["lon"])
+            best_hotel = None
+            best_dist = float("inf")
+
+            for hotel in hotel_places:
+                hotel_gp = GeoPoint(hotel["lat"], hotel["lon"])
+                dist = DistanceCalculator.distance(place_gp, hotel_gp)
+                if dist < best_dist:
+                    best_dist = dist
+                    best_hotel = hotel["name"]
+
+            if best_hotel and best_dist <= LIMIT:
+                excursions[best_hotel].append(place)
+            else:
+                main_tour.append(place)
+
+        return {
+            "main_tour": main_tour,
+            "excursions": excursions
+        }
+
+    @staticmethod
     def optimize_places_with_distances(places_list: list[dict], start_city_name: str = None) -> dict:
         """
         Optimizes tour order (Nearest Neighbor + 2-opt) and calculates segment distances.
