@@ -12,7 +12,7 @@ import json
 import math
 import os
 import requests
-from src.core.algorithm import GeoPoint
+from core.algorithm import GeoPoint
 from geopy.geocoders import Nominatim
 
 

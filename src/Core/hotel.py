@@ -1,5 +1,5 @@
-from src.core.places import Place
-from src.core.algorithm import GeoPoint, DistanceCalculator
+from core.places import Place
+from core.algorithm import GeoPoint, DistanceCalculator
 
 
 class Hotel:
