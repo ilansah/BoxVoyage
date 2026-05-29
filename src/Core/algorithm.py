@@ -29,7 +29,7 @@ class GeoPoint:
         return f"GeoPoint(lat={self.lat}, lon={self.lon})"
 
 
-class DistanceCalculator:
+class DistanceCalculator:   
     """
     Calculates distances between geographic points using the great-circle distance formula.
 
@@ -177,7 +177,7 @@ class TourOptimiszer:
                         improved = True
 
         return best
-
+    
     @staticmethod
     def optimize_places_with_distances(places_list: list[dict]) -> dict:
         """
@@ -200,19 +200,19 @@ class TourOptimiszer:
                 'segments': [],
                 'total_distance': 0.0
             }
-
+        
         # Convert to GeoPoints
         geopoints = [GeoPoint(p["lat"], p["lon"]) for p in places_list]
 
-        # Step 1: Nearest Neighbor for initial tour (result includes return point at end)
+        # Step 1: nearest neighbor for initial tour (excludes return point at end)
         nn_tour = TourOptimiszer.nearest_neighbor(geopoints)
         nn_tour_no_return = nn_tour[:-1]
 
         # Step 2: 2-opt improvement
         optimized_geopoints_raw = TourOptimiszer.two_opt(nn_tour_no_return)
         optimized_geopoints = optimized_geopoints_raw + [optimized_geopoints_raw[0]]
-
-        # Map back to original place dicts in optimized order
+        
+        # Retrouver les places dans l'ordre optimisé
         optimized_places = []
         for opt_gp in optimized_geopoints[:-1]:
             for place in places_list:
