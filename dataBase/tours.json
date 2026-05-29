@@ -127,6 +127,53 @@
           "owner": "aa"
         }
       ]
+    },
+    {
+      "id": "6eb431ce",
+      "name": "france",
+      "owner": "aa",
+      "is_public": true,
+      "places": []
+    }
+  ],
+  "ilan": [
+    {
+      "id": "e227067a",
+      "name": "France",
+      "owner": "ilan",
+      "is_public": false,
+      "places": [
+        {
+          "name": "Lille",
+          "lat": 50.6365654,
+          "lon": 3.0635282,
+          "owner": "ilan"
+        },
+        {
+          "name": "Dunkerque",
+          "lat": 51.0347708,
+          "lon": 2.3772525,
+          "owner": "ilan"
+        },
+        {
+          "name": "Hazebrouck",
+          "lat": 50.7226113,
+          "lon": 2.5360331,
+          "owner": "ilan"
+        },
+        {
+          "name": "Paris",
+          "lat": 48.8534951,
+          "lon": 2.3483915,
+          "owner": "ilan"
+        },
+        {
+          "name": "Lens",
+          "lat": 50.4291723,
+          "lon": 2.8319805,
+          "owner": "ilan"
+        }
+      ]
     }
   ]
 }
