@@ -166,6 +166,13 @@ class TourManager:
 
         for t in raw_tours:
             if t["id"] == tour_id:
+                # Vérifier si la ville est déjà présente (insensible à la casse)
+                already_exists = any(
+                    p["name"].lower() == place.name.lower()
+                    for p in t["places"]
+                )
+                if already_exists:
+                    return False
                 t["places"].append(place.to_dict())
                 self._save_owner_tours(raw_tours)
                 return True

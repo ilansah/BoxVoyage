@@ -156,6 +156,24 @@ class TestTourManager(unittest.TestCase):
         result = manager.set_visibility("xxxxxxxx", is_public=True)
         self.assertFalse(result)
 
+    def test_add_place_to_tour_success(self):
+        """add_place_to_tour must return True and add the place when no duplicate."""
+        data = {"alice": [self._sample_tour_dict("abcd1234")]}
+        manager = self._make_manager(data)
+        place = make_place("Paris", 48.85, 2.35)
+        result = manager.add_place_to_tour("abcd1234", place)
+        self.assertTrue(result)
+
+    def test_add_place_to_tour_duplicate(self):
+        """add_place_to_tour must return False when the place already exists (case-insensitive)."""
+        tour_dict = self._sample_tour_dict("abcd1234")
+        tour_dict["places"] = [{"name": "Paris", "lat": 48.85, "lon": 2.35, "owner": "alice"}]
+        data = {"alice": [tour_dict]}
+        manager = self._make_manager(data)
+        place = make_place("paris", 48.85, 2.35)  # même nom, casse différente
+        result = manager.add_place_to_tour("abcd1234", place)
+        self.assertFalse(result)
+
 
 if __name__ == "__main__":
     unittest.main()
